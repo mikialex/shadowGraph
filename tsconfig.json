@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "noImplicitAny": false,
+        "module": "commonjs",
+        "lib": [
+            "esnext",
+            "dom"
+        ]
+    },
+    "include": [
+        "./src/**/*.ts"
+    ],
+    "exclude": [
+        "build",
+        "node_modules"
+    ]
+}
