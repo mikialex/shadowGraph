@@ -1,13 +1,12 @@
 
 export interface NodeParams{
   name: string;
-  value: any;
+  valueRef: NevaNode;
   validation: boolean;
 }
 
 export interface NodeParamsDescriptor {
   name: string;
-  type: string;
 }
 
 export interface NodeInterface{
@@ -15,45 +14,66 @@ export interface NodeInterface{
   paramsDescriptor: NodeParamsDescriptor[];
 }
 
-const defaultValueMapper = {
-  string: '',
-  number: 0,
-  boolean: false,
-}
+// const defaultValueMapper = {
+//   string: '',
+//   number: 0,
+//   boolean: false,
+// }
 
 export class NevaNode{
   public name: string;
   public inputParams: NodeParams[];
-  public output: any;
-  public evaluFunction;
+  protected output: any;
   public config: NodeInterface;
+
+  public getOutput() {
+    return this.output;
+  }
+
   constructor(nodeConfig: NodeInterface) {
     this.config = nodeConfig;
+  }
+}
+
+export class FunctionNode extends NevaNode {
+  public evaluFunction;
+  constructor(nodeConfig: NodeInterface) {
+    super(nodeConfig);
     this.evaluFunction = nodeConfig.evaluFunction;
-    
+
     this.inputParams = [];
     nodeConfig.paramsDescriptor.forEach(discriptor => {
       this.inputParams.push({
         name: discriptor.name,
-        value: defaultValueMapper[discriptor.type],
+        valueRef: null,
         validation: false
       });
     });
-
   }
 
   public evaluate() {
-    this.output = this.evaluFunction(this.inputParams);
+    if (this.checkIfCanEvaluate()) {
+      const params = [];
+      this.inputParams.forEach(input => {
+        params.push(input.valueRef.getOutput());
+      })
+      this.output = this.evaluFunction(params);
+    } else {
+      throw 'params not ready'
+    }
   }
 
-  public validate() {
-    
+  public checkIfCanEvaluate() {
+    return true;
   }
+
+
+  public pipeTo(node:NevaNode, injectSlot:string) {
+    node.inputParams.forEach(input => {
+      if (input.name === injectSlot) {
+        input.valueRef = this;
+      }
+    })
+  }
+
 }
-
-
-// export class NodeAdd extends Node{
-//   constructor() {
-
-//   }
-// }
