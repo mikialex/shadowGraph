@@ -30,6 +30,10 @@ export class NevaNode{
     return this.output;
   }
 
+  public checkIfCanEvaluate() {
+    throw 'checkIfCanEvaluate not imple'
+  }
+
   constructor(nodeConfig: NodeInterface) {
     this.config = nodeConfig;
   }
@@ -52,15 +56,38 @@ export class FunctionNode extends NevaNode {
   }
 
   public evaluate() {
-    if (this.checkIfCanEvaluate()) {
-      const params = [];
-      this.inputParams.forEach(input => {
-        params.push(input.valueRef.getOutput());
-      })
-      this.output = this.evaluFunction(params);
-    } else {
-      throw 'params not ready'
+
+    
+    const evalStack = [];
+    evalStack.push(this);
+    function collectDependency(node: NevaNode) {
+      for (let i = 0; i < node.inputParams.length; i++) {
+        const input = node.inputParams[i];
+        const ref = input.valueRef;
+        if (ref) {
+          if (evalStack.indexOf(ref) === -1) {
+            evalStack.push(ref);
+            collectDependency(ref);
+          }
+        }
+      }
     }
+    collectDependency(this);
+    console.log(evalStack);
+
+    evalStack.reverse().forEach((node: NevaNode) => {
+      if (node.checkIfCanEvaluate()) {
+        const params = [];
+        this.inputParams.forEach(input => {
+          params.push(input.valueRef.getOutput());
+        })
+        this.output = this.evaluFunction(params);
+      } else {
+        throw 'params not ready'
+      }
+    })
+    console.log('node eval: ', this.getOutput());
+    
   }
 
   public checkIfCanEvaluate() {

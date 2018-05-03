@@ -35,6 +35,3 @@ constInputNodeB.pipeTo(additionNode, 'number2');
 constInputNodeA.evaluate();
 constInputNodeB.evaluate();
 additionNode.evaluate();
-
-console.log(additionNode);
-console.log(additionNode.getOutput());
