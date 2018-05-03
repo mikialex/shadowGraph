@@ -20,7 +20,10 @@ export interface NodeInterface{
 //   boolean: false,
 // }
 
+let globalNodeId = 0;
+
 export class NevaNode{
+  public id: number;
   public name: string;
   public inputParams: NodeParams[];
   protected output: any;
@@ -36,11 +39,14 @@ export class NevaNode{
 
   constructor(nodeConfig: NodeInterface) {
     this.config = nodeConfig;
+    this.id = globalNodeId;
+    globalNodeId++;
   }
 }
 
 export class FunctionNode extends NevaNode {
   public evaluFunction;
+
   constructor(nodeConfig: NodeInterface) {
     super(nodeConfig);
     this.evaluFunction = nodeConfig.evaluFunction;
@@ -55,9 +61,9 @@ export class FunctionNode extends NevaNode {
     });
   }
 
+
   public evaluate() {
 
-    
     const evalStack = [];
     evalStack.push(this);
     function collectDependency(node: NevaNode) {
@@ -75,15 +81,15 @@ export class FunctionNode extends NevaNode {
     collectDependency(this);
     console.log(evalStack);
 
-    evalStack.reverse().forEach((node: NevaNode) => {
+    evalStack.reverse().forEach((node: FunctionNode) => {
       if (node.checkIfCanEvaluate()) {
         const params = [];
-        this.inputParams.forEach(input => {
+        node.inputParams.forEach(input => {
           params.push(input.valueRef.getOutput());
         })
-        this.output = this.evaluFunction(params);
+        node.output = node.evaluFunction(params);
       } else {
-        throw 'params not ready'
+        throw `node: ${node.id} 's params not ready`
       }
     })
     console.log('node eval: ', this.getOutput());
@@ -91,7 +97,13 @@ export class FunctionNode extends NevaNode {
   }
 
   public checkIfCanEvaluate() {
-    return true;
+    let isvalid = true;
+    this.inputParams.forEach(input => {
+      if (!input.valueRef) {
+        isvalid = false;
+      }
+    })
+    return isvalid;
   }
 
 
