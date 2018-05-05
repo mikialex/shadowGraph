@@ -1,33 +1,38 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
+  <div class="neva-node" :style="{
+    left: viewPositionX,
+    top: viewPositionY
+  }">
     
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import { ViewFunctionNode } from "../core/view-function-node";
 
 @Component
-export default class HelloWorld extends Vue {
-  @Prop() private msg: string;
+export default class NevaNodeCom extends Vue {
+
+@Prop() node: ViewFunctionNode
+
+get viewPositionX(){
+  return this.node.positionX + 'px';
 }
+
+get viewPositionY(){
+  return this.node.positionY + 'px';
+}
+
+}
+
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+.neva-node{
+  width:100px;
+  height:50px;
+  border:1px solid #000;
+  position: absolute;
 }
 </style>

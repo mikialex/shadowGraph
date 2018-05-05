@@ -1,18 +1,5 @@
+import { NodeParamsDescriptor, NodeParams, NodeInterface } from "@/core/node-interface";
 
-export interface NodeParams{
-  name: string;
-  valueRef: NevaNode;
-  validation: boolean;
-}
-
-export interface NodeParamsDescriptor {
-  name: string;
-}
-
-export interface NodeInterface{
-  evaluFunction;
-  paramsDescriptor: NodeParamsDescriptor[];
-}
 
 // const defaultValueMapper = {
 //   string: '',
@@ -24,7 +11,7 @@ let globalNodeId = 0;
 
 export class NevaNode{
   public id: number;
-  public name: string;
+  public name = 'default name';
   public inputParams: NodeParams[];
   protected output: any;
   public config: NodeInterface;

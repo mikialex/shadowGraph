@@ -1,17 +1,17 @@
 <template>
   <div class="home">
-    <Node msg="test"/>
+    <NevaBoardCom/>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import Node from "@/components/node.vue"; // @ is an alias to /src
+import NevaBoardCom from "@/components/board.vue"; // @ is an alias to /src
 import { NevaNode, FunctionNode } from "../core/node";
 
 @Component({
   components: {
-    Node
+    NevaBoardCom
   }
 })
 export default class Home extends Vue {
