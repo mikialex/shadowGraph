@@ -1,8 +1,14 @@
 <template>
-  <div class="neva-board" @click="addNode">
-    <NevaNodeCom v-for="node in nodeList" 
-    :node="node"
-    :key="node.id"></NevaNodeCom>
+  <div>
+    <div class="tool-bar">
+      <button @click="eval">eval</button>
+      <!-- <div @click="">addition</div> -->
+    </div>
+    <div class="neva-board" @click="addNode">
+      <NevaNodeCom v-for="node in nodeList" 
+      :node="node"
+      :key="node.id"></NevaNodeCom>
+    </div>
   </div>
 </template>
 
@@ -31,6 +37,10 @@ export default class NevaBoard extends Vue {
     newNode.positionY = e.offsetY;
     this.nodeList.push(newNode);
   }
+
+  eval(){
+
+  }
 }
 </script>
 
@@ -41,5 +51,9 @@ export default class NevaBoard extends Vue {
   height:400px;
   border:1px solid #000;
   position: relative;
+}
+
+.tool-bar{
+
 }
 </style>

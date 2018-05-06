@@ -12,7 +12,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { ViewFunctionNode } from "../core/view-function-node";
 
 @Component
-export default class NevaNodeCom extends Vue {
+export default class NevaNumberInputNodeCom extends Vue {
 
   @Prop() node: ViewFunctionNode
 
