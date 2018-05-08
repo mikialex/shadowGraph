@@ -11,11 +11,11 @@
       </div>
     </div>
     <div class="neva-board" @click.self="addNode">
-      <NevaNodeCom v-for="node in nodeList" 
+      <NevaNodeCom v-for="node in this.$store.state.nodeList" 
       :node="node"
       :key="node.id"></NevaNodeCom>
 
-      <NevaNodeInputCom v-for="node in inputList" 
+      <NevaNodeInputCom v-for="node in this.$store.state.inputNodeList" 
       :node="node"
       :key="node.id"></NevaNodeInputCom>
     </div>
@@ -54,11 +54,7 @@ export default class NevaBoard extends Vue {
     let newNode = new ViewFunctionNode(this.currentType);
     newNode.positionX = e.offsetX;
     newNode.positionY = e.offsetY;
-    if(newNode.type === 'input'){
-      this.inputList.push(newNode);
-    } else{
-      this.nodeList.push(newNode);
-    }
+    this.$store.commit('addNode',newNode);
   }
 
   eval(){

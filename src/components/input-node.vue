@@ -1,29 +1,22 @@
 <template>
-  <div class="neva-node" :style="{
-    left: viewPositionX,
-    top: viewPositionY
-  }">
-    <span>{{node.name}}</span>
+  <NodeUIWrap :node="node">
     <input type="number">
-  </div>
+  </NodeUIWrap>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { ViewFunctionNode } from "../core/view-function-node";
+import NodeUIWrap from './node-wrap.vue';
 
-@Component
+@Component({
+  components: {
+    NodeUIWrap,
+  }
+})
 export default class NevaNumberInputNodeCom extends Vue {
 
   @Prop() node: ViewFunctionNode
-
-  get viewPositionX(){
-    return this.node.positionX + 'px';
-  }
-
-  get viewPositionY(){
-    return this.node.positionY + 'px';
-  }
 
 }
 
@@ -35,5 +28,9 @@ export default class NevaNumberInputNodeCom extends Vue {
   height:50px;
   border:1px solid #000;
   position: absolute;
+}
+
+input{
+  width:100%;
 }
 </style>

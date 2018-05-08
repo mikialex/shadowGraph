@@ -1,28 +1,22 @@
 <template>
-  <div class="neva-node" :style="{
-    left: viewPositionX,
-    top: viewPositionY
-  }">
-    <span>{{node.type}}</span>
-  </div>
+  <NodeUIWrap :node="node">
+    ADD
+  </NodeUIWrap>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { ViewFunctionNode } from "../core/view-function-node";
+import NodeUIWrap from './node-wrap.vue';
 
-@Component
+@Component({
+  components: {
+    NodeUIWrap,
+  }
+})
 export default class NevaNodeCom extends Vue {
 
   @Prop() node: ViewFunctionNode
-
-  get viewPositionX(){
-    return this.node.positionX + 'px';
-  }
-
-  get viewPositionY(){
-    return this.node.positionY + 'px';
-  }
 
 }
 
