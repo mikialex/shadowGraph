@@ -2,12 +2,22 @@
   <div>
     <div class="tool-bar">
       <button @click="eval">eval</button>
-      <!-- <div @click="">addition</div> -->
+      <div v-for="config in nodeTypeList" :key="config.name">
+        <button @click="switchCurrentType(config)"
+        :class="{'current-type':config === currentType}"
+        >
+          {{config.type}}
+        </button>
+      </div>
     </div>
-    <div class="neva-board" @click="addNode">
+    <div class="neva-board" @click.self="addNode">
       <NevaNodeCom v-for="node in nodeList" 
       :node="node"
       :key="node.id"></NevaNodeCom>
+
+      <NevaNodeInputCom v-for="node in inputList" 
+      :node="node"
+      :key="node.id"></NevaNodeInputCom>
     </div>
   </div>
 </template>
@@ -15,27 +25,40 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import NevaNodeCom from "@/components/node.vue";
+import NevaNodeInputCom from "@/components/input-node.vue";
 import { ViewFunctionNode } from "../core/view-function-node";
+import {AdditionNodeConfig} from '../nodes/addition';
+import {InputNodeConfig} from '../nodes/input';
 
 @Component({
   components: {
-    NevaNodeCom
+    NevaNodeCom,
+    NevaNodeInputCom
   }
 })
 export default class NevaBoard extends Vue {
-  nodeList=[];
 
+  nodeTypeList = [
+    AdditionNodeConfig,
+    InputNodeConfig
+  ]
+  currentType = InputNodeConfig;
+  switchCurrentType(newType){
+    this.currentType = newType;
+  }
+
+  nodeList=[];
+  inputList = [];
   addNode(e){
     console.log(e);
-    let newNode = new ViewFunctionNode({
-      evaluFunction: (params: any[]) => {
-        return 12;
-      },
-      paramsDescriptor: []
-    });
+    let newNode = new ViewFunctionNode(this.currentType);
     newNode.positionX = e.offsetX;
     newNode.positionY = e.offsetY;
-    this.nodeList.push(newNode);
+    if(newNode.type === 'input'){
+      this.inputList.push(newNode);
+    } else{
+      this.nodeList.push(newNode);
+    }
   }
 
   eval(){
@@ -55,5 +78,9 @@ export default class NevaBoard extends Vue {
 
 .tool-bar{
 
+}
+
+.current-type{
+  background: #f00;
 }
 </style>

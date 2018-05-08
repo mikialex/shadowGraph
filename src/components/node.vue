@@ -3,7 +3,7 @@
     left: viewPositionX,
     top: viewPositionY
   }">
-    <span>{{node.name}}</span>
+    <span>{{node.type}}</span>
   </div>
 </template>
 

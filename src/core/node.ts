@@ -11,13 +11,14 @@ let globalNodeId = 0;
 
 export class NevaNode{
   public id: number;
-  public name = 'default name';
+  public type = 'default type';
   public inputParams: NodeParams[];
-  protected output: any;
-  public config: NodeInterface;
+  protected value: any;
+  private config: NodeInterface;
+  public isInputNode: boolean;
 
-  public getOutput() {
-    return this.output;
+  public getValue() {
+    return this.value;
   }
 
   public checkIfCanEvaluate() {
@@ -26,6 +27,8 @@ export class NevaNode{
 
   constructor(nodeConfig: NodeInterface) {
     this.config = nodeConfig;
+    this.isInputNode = nodeConfig.isInputNode;
+    this.type = nodeConfig.type;
     this.id = globalNodeId;
     globalNodeId++;
   }
@@ -50,7 +53,6 @@ export class FunctionNode extends NevaNode {
 
 
   public evaluate() {
-
     const evalStack = [];
     evalStack.push(this);
     function collectDependency(node: NevaNode) {
@@ -72,14 +74,16 @@ export class FunctionNode extends NevaNode {
       if (node.checkIfCanEvaluate()) {
         const params = [];
         node.inputParams.forEach(input => {
-          params.push(input.valueRef.getOutput());
+          params.push(input.valueRef.getValue());
         })
-        node.output = node.evaluFunction(params);
+        if (!node.isInputNode) {
+          node.value = node.evaluFunction(params);
+        }
       } else {
         throw `node: ${node.id} 's params not ready`
       }
     })
-    console.log('node eval: ', this.getOutput());
+    console.log('node eval: ', this.getValue());
     
   }
 

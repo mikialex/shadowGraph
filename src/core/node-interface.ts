@@ -13,4 +13,6 @@ export interface NodeParamsDescriptor {
 export interface NodeInterface {
   evaluFunction;
   paramsDescriptor: NodeParamsDescriptor[];
+  isInputNode?: boolean;
+  type: string;
 }

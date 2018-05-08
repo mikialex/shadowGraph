@@ -4,6 +4,7 @@
     top: viewPositionY
   }">
     <span>{{node.name}}</span>
+    <input type="number">
   </div>
 </template>
 

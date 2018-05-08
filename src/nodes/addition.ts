@@ -1,5 +1,5 @@
 export const AdditionNodeConfig = {
-  name: 'addition',
+  type: 'addition',
   evaluFunction: (params: any[]) => {
     return params[0] + params[1];
   },
