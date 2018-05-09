@@ -10,7 +10,7 @@
         </button>
       </div>
     </div>
-    <div class="neva-board" @click.self="addNode">
+    <div class="neva-board" @mousedown.self="addNode">
       <NevaNodeCom v-for="node in this.$store.state.nodeList" 
       :node="node"
       :key="node.id"></NevaNodeCom>
