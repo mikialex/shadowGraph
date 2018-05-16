@@ -10,12 +10,16 @@
       <button @click ="deleteNode">X</button>
       <button @mousedown ="startConnection">-></button>
     </div>
+    <div class="connection-hub">
+      
+    </div>
     <slot></slot>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import { createSVGConnectionLine } from '../util/line';
 
 @Component
 export default class NodeUIWrap extends Vue {
@@ -96,6 +100,10 @@ export default class NodeUIWrap extends Vue {
       user-select: none;
     }
   }
+}
+
+.connection-hub{
+  position: absolute;
 }
 
 </style>

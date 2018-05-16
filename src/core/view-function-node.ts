@@ -9,6 +9,11 @@ export class ViewFunctionNode extends FunctionNode{
   public positionX = 0;
   public positionY = 0;
 
+  public connectReceiverX = 0;
+  public connectReceiverY = 10;
+
+  public connectEmitorX = 100;
+  public connectEmitorY = 10;
   
 
 }
