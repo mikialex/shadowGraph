@@ -4,10 +4,11 @@
     left: viewPositionX,
     top: viewPositionY
   }">
-    <div class="node-title"
-    @mousedown="startdrag">
+    <div class="node-title">
       <span draggable="false">{{node.type}}</span>
+      <button @mousedown="startdrag">=</button>
       <button @click ="deleteNode">X</button>
+      <button @mousedown ="startConnection">-></button>
     </div>
     <slot></slot>
   </div>
@@ -38,16 +39,10 @@ export default class NodeUIWrap extends Vue {
   screenOriginX =0;
   screenOriginY =0;
   dragging(e:MouseEvent){
-    // console.log(this.$el.offsetLeft);
     this.node.positionX = this.originX + e.screenX - this.screenOriginX ;
     this.node.positionY = this.originY + e.screenY - this.screenOriginY;
-    // if(e.target!==this.$el){
-    //   this.node.positionX = e.offsetX;
-    //   this.node.positionY = e.offsetY;
-    // }
   }
   startdrag(e: MouseEvent){
-    // console.log(e);
     this.isDraging = true;
     this.originX = this.$el.offsetLeft;
     this.originY = this.$el.offsetTop;
@@ -57,6 +52,27 @@ export default class NodeUIWrap extends Vue {
     window.addEventListener('mouseup',e=>{
       // console.log('mouse up');
       window.removeEventListener('mousemove', this.dragging);
+    })
+  }
+
+  connecting(e:MouseEvent){
+      this.$store.commit('connectingUpdate' , {
+        x:e.clientX,
+        y:e.clientY,
+      });
+  }
+
+  startConnection(e: MouseEvent){
+    this.isDraging = true;
+    this.$store.commit('startConnection',{
+      x:e.clientX,
+      y:e.clientY,
+    });
+    window.addEventListener('mousemove',this.connecting)
+    window.addEventListener('mouseup',e=>{
+      // console.log('mouse up');
+      this.$store.commit('endConnection');
+      window.removeEventListener('mousemove', this.connecting);
     })
   }
 }

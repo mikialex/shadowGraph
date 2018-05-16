@@ -6,7 +6,12 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     nodeList: [],
-    inputNodeList:[],
+    inputNodeList: [],
+    connectorStartX: 0,
+    connectorStartY: 0,
+    connectorCursorX: 0,
+    connectorCursorY: 0,
+    isConnecting: false,
   },
   mutations: {
     addNode(state, node) {
@@ -28,6 +33,26 @@ export default new Vuex.Store({
         })
       }
     },
+    setNodeValue(state, payload) {
+      const n = state.inputNodeList.filter(n => {
+        return n.id === payload.node.id;
+      })
+      n[0].setValue(payload.value);
+    },
+    startConnection(state, payload) {
+      state.isConnecting = true;
+      state.connectorStartX = payload.x;
+      state.connectorStartY = payload.y;
+      state.connectorCursorX = payload.x;
+      state.connectorCursorY = payload.y;
+    },
+    connectingUpdate(state, payload) {
+      state.connectorCursorX = payload.x;
+      state.connectorCursorY = payload.y;
+    },
+    endConnection(state, payload) {
+      state.isConnecting = false;
+    }
   },
   actions: {
 

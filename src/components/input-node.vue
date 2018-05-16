@@ -1,6 +1,6 @@
 <template>
   <NodeUIWrap :node="node">
-    <input type="number">
+    <input type="number" v-model="value">
   </NodeUIWrap>
 </template>
 
@@ -17,6 +17,17 @@ import NodeUIWrap from './node-wrap.vue';
 export default class NevaNumberInputNodeCom extends Vue {
 
   @Prop() node: ViewFunctionNode
+
+  get value(){
+    return this.node.getValue();
+  }
+
+  set value(val){
+    this.$store.commit('setNodeValue', {
+      node:this.node,
+      value:parseFloat(val)
+    })
+  }
 
 }
 

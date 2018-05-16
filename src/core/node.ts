@@ -13,12 +13,16 @@ export class NevaNode{
   public id: number;
   public type = 'default type';
   public inputParams: NodeParams[];
-  protected value: any;
+  protected value: any = null;
   private config: NodeInterface;
   public isInputNode: boolean;
 
   public getValue() {
     return this.value;
+  }
+
+  public setValue(val) {
+    this.value = val;
   }
 
   public checkIfCanEvaluate() {

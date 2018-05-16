@@ -10,6 +10,7 @@
         </button>
       </div>
     </div>
+    <NodeConnector></NodeConnector>
     <div class="neva-board" @mousedown.self="addNode">
       <NevaNodeCom v-for="node in this.$store.state.nodeList" 
       :node="node"
@@ -18,6 +19,8 @@
       <NevaNodeInputCom v-for="node in this.$store.state.inputNodeList" 
       :node="node"
       :key="node.id"></NevaNodeInputCom>
+
+
     </div>
   </div>
 </template>
@@ -27,13 +30,15 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import NevaNodeCom from "@/components/node.vue";
 import NevaNodeInputCom from "@/components/input-node.vue";
 import { ViewFunctionNode } from "../core/view-function-node";
-import {AdditionNodeConfig} from '../nodes/addition';
+import {AdditionNodeConfig} from '../nodes/addition';NodeConnector
 import {InputNodeConfig} from '../nodes/input';
+import NodeConnector from "@/components/connector.vue";
 
 @Component({
   components: {
     NevaNodeCom,
-    NevaNodeInputCom
+    NevaNodeInputCom,
+    NodeConnector
   }
 })
 export default class NevaBoard extends Vue {
