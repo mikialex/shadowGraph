@@ -12,6 +12,8 @@ export default new Vuex.Store({
     connectorCursorX: 0,
     connectorCursorY: 0,
     isConnecting: false,
+    connectFrom: null,
+    lines:[],
   },
   mutations: {
     addNode(state, node) {
@@ -41,6 +43,7 @@ export default new Vuex.Store({
     },
     startConnection(state, payload) {
       state.isConnecting = true;
+      state.connectFrom = payload.node;
       state.connectorStartX = payload.x;
       state.connectorStartY = payload.y;
       state.connectorCursorX = payload.x;
@@ -52,7 +55,8 @@ export default new Vuex.Store({
     },
     endConnection(state, payload) {
       state.isConnecting = false;
-    }
+      state.connectFrom = null;
+    },
   },
   actions: {
 

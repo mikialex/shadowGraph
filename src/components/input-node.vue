@@ -1,5 +1,7 @@
 <template>
-  <NodeUIWrap :node="node">
+  <NodeUIWrap 
+    :boardInfo="boardInfo"
+    :node="node">
     <input type="number" v-model="value">
   </NodeUIWrap>
 </template>
@@ -17,6 +19,7 @@ import NodeUIWrap from './node-wrap.vue';
 export default class NevaNumberInputNodeCom extends Vue {
 
   @Prop() node: ViewFunctionNode
+  @Prop() boardInfo;
 
   get value(){
     return this.node.getValue();

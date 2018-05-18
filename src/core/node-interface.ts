@@ -4,6 +4,7 @@ export interface NodeParams {
   name: string;
   valueRef: NevaNode;
   validation: boolean;
+  self: NevaNode;
 }
 
 export interface NodeParamsDescriptor {

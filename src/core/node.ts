@@ -50,7 +50,8 @@ export class FunctionNode extends NevaNode {
       this.inputParams.push({
         name: discriptor.name,
         valueRef: null,
-        validation: false
+        validation: false,
+        self:this,
       });
     });
   }
@@ -102,10 +103,10 @@ export class FunctionNode extends NevaNode {
   }
 
 
-  public pipeTo(node:NevaNode, injectSlot:string) {
-    node.inputParams.forEach(input => {
+  public pipeFrom(node:NevaNode, injectSlot:string) {
+    this.inputParams.forEach(input => {
       if (input.name === injectSlot) {
-        input.valueRef = this;
+        input.valueRef = node;
       }
     })
   }

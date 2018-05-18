@@ -11,13 +11,15 @@
       </div>
     </div>
     <NodeConnector></NodeConnector>
-    <div class="neva-board" @mousedown.self="addNode">
+    <div class="neva-board" id="board" @mousedown.self="addNode">
       <NevaNodeCom v-for="node in this.$store.state.nodeList" 
       :node="node"
+      :boardInfo="boardInfo"
       :key="node.id"></NevaNodeCom>
 
       <NevaNodeInputCom v-for="node in this.$store.state.inputNodeList" 
       :node="node"
+      :boardInfo="boardInfo"
       :key="node.id"></NevaNodeInputCom>
 
 
@@ -52,13 +54,19 @@ export default class NevaBoard extends Vue {
     this.currentType = newType;
   }
 
+  get boardInfo(){
+    return {
+      offsetX: document.querySelector('#board').getBoundingClientRect().left,
+      offsetY: document.querySelector('#board').getBoundingClientRect().top,
+    }
+  }
+
   nodeList=[];
   inputList = [];
-  addNode(e){
-    console.log(e);
+  addNode(e: MouseEvent){
     let newNode = new ViewFunctionNode(this.currentType);
-    newNode.positionX = e.offsetX;
-    newNode.positionY = e.offsetY;
+    newNode.positionX = e.clientX;
+    newNode.positionY = e.clientY;
     this.$store.commit('addNode',newNode);
   }
 

@@ -1,5 +1,6 @@
 <template>
   <div class="neva-node-wrap"
+  @mousemove="makeConnect"
   :style="{
     left: viewPositionX,
     top: viewPositionY
@@ -10,9 +11,15 @@
       <button @click ="deleteNode">X</button>
       <button @mousedown ="startConnection">-></button>
     </div>
-    <div class="connection-hub">
-      
-    </div>
+    <!-- <div class="connection-hub">
+      <svg width="100px" height="100px">
+          <path 
+          v-for="line in lines"
+          :key="line"
+          :d="this.svgPath"
+          stroke="black" fill="transparent"/>
+      </svg>
+    </div> -->
     <slot></slot>
   </div>
 </template>
@@ -20,17 +27,19 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { createSVGConnectionLine } from '../util/line';
+import { ViewFunctionNode } from '../core/view-function-node';
 
 @Component
 export default class NodeUIWrap extends Vue {
-  @Prop() node;
+  @Prop() node:ViewFunctionNode;
+  @Prop() boardInfo;
 
   get viewPositionX(){
-    return this.node.positionX + 'px';
+    return this.node.positionX - this.boardInfo.offsetX + 'px';
   }
 
   get viewPositionY(){
-    return this.node.positionY + 'px';
+    return this.node.positionY- this.boardInfo.offsetY + 'px';
   }
 
   deleteNode(){
@@ -48,8 +57,8 @@ export default class NodeUIWrap extends Vue {
   }
   startdrag(e: MouseEvent){
     this.isDraging = true;
-    this.originX = this.$el.offsetLeft;
-    this.originY = this.$el.offsetTop;
+    this.originX = this.$el.getBoundingClientRect().left;
+    this.originY = this.$el.getBoundingClientRect().top;
     this.screenOriginX = e.screenX;
     this.screenOriginY = e.screenY;
     window.addEventListener('mousemove',this.dragging)
@@ -71,6 +80,7 @@ export default class NodeUIWrap extends Vue {
     this.$store.commit('startConnection',{
       x:e.clientX,
       y:e.clientY,
+      node:this.node
     });
     window.addEventListener('mousemove',this.connecting)
     window.addEventListener('mouseup',e=>{
@@ -79,6 +89,43 @@ export default class NodeUIWrap extends Vue {
       window.removeEventListener('mousemove', this.connecting);
     })
   }
+
+  makeConnect(e: MouseEvent){
+    if(this.$store.state.isConnecting
+      && this.$store.state.connectFrom.id !== this.node.id
+      && this.node.inputParams[0]){
+        this.node.pipeFrom(this.$store.state.connectFrom,
+        this.node.inputParams[0].name)
+    }
+  }
+
+  
+
+  get lines(){
+    return this.node.inputParams.filter(para=>{
+      return para.valueRef !== null;
+    }).map(para=>{
+      const nodeBefore = para.valueRef as ViewFunctionNode;
+      return createSVGConnectionLine(
+        nodeBefore.positionX + nodeBefore.connectEmitorX,
+        nodeBefore.positionY + nodeBefore.connectEmitorY,
+        this.node.positionX + this.node.connectReceiverX,
+        this.node.positionY + this.node.connectReceiverY,
+      )
+    })
+  }
+
+  // get svgWidth(){
+  //   this.lines.reduce((lineA,lineB))
+  // }
+
+  // get svgHeight(){
+    
+  // }
+
+  // get verticleOffset(){
+
+  // }
 }
 
 </script>
