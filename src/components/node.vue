@@ -2,7 +2,7 @@
   <NodeUIWrap 
     :boardInfo="boardInfo"
     :node="node">
-    ADD
+    
   </NodeUIWrap>
 </template>
 

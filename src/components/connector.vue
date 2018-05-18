@@ -44,11 +44,20 @@ export default class NodeConnector extends Vue {
     })
     .map(para=>{
       const nodeBefore = para.valueRef as ViewFunctionNode;
+      let paraIndex;
+      for (let i = 0; i < para.self.inputParams.length; i++) {
+        const p = para.self.inputParams[i];
+        if(p.name === para.name){
+          paraIndex =i;
+          break;
+        }
+      }
+      para.self.inputParams
       return createSVGConnectionLine(
         nodeBefore.positionX + nodeBefore.connectEmitorX,
         nodeBefore.positionY + nodeBefore.connectEmitorY,
-        para.self.positionX + para.self.connectReceiverX,
-        para.self.positionY + para.self.connectReceiverY,
+        para.self.positionX +  para.self.inputsPositions[paraIndex].reciverX,
+        para.self.positionY + para.self.inputsPositions[paraIndex].reciverY,
       )
     })
     return params;

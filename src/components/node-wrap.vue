@@ -1,25 +1,26 @@
 <template>
   <div class="neva-node-wrap"
-  @mousemove="makeConnect"
   :style="{
     left: viewPositionX,
     top: viewPositionY
   }">
     <div class="node-title">
       <span draggable="false">{{node.type}}</span>
+    </div>
+    <div class="node-opration">
       <button @mousedown="startdrag">=</button>
       <button @click ="deleteNode">X</button>
       <button @mousedown ="startConnection">-></button>
     </div>
-    <!-- <div class="connection-hub">
-      <svg width="100px" height="100px">
-          <path 
-          v-for="line in lines"
-          :key="line"
-          :d="this.svgPath"
-          stroke="black" fill="transparent"/>
-      </svg>
-    </div> -->
+    <div class="connection-inputs" @mousemove="makeConnect">
+      <div
+      v-for="input in node.inputParams"
+      :key="input.name"
+      :class="input.name"
+      >
+        {{input.name}}
+      </div>
+    </div>
     <slot></slot>
   </div>
 </template>
@@ -63,7 +64,6 @@ export default class NodeUIWrap extends Vue {
     this.screenOriginY = e.screenY;
     window.addEventListener('mousemove',this.dragging)
     window.addEventListener('mouseup',e=>{
-      // console.log('mouse up');
       window.removeEventListener('mousemove', this.dragging);
     })
   }
@@ -93,9 +93,9 @@ export default class NodeUIWrap extends Vue {
   makeConnect(e: MouseEvent){
     if(this.$store.state.isConnecting
       && this.$store.state.connectFrom.id !== this.node.id
-      && this.node.inputParams[0]){
+      && (e.target as HTMLElement).className){
         this.node.pipeFrom(this.$store.state.connectFrom,
-        this.node.inputParams[0].name)
+        (e.target as HTMLElement).className)
     }
   }
 
@@ -133,24 +133,32 @@ export default class NodeUIWrap extends Vue {
 <style scoped lang="scss">
 .neva-node-wrap{
   width:100px;
-  height:50px;
+  min-height:50px;
   border:1px solid #000;
   position: absolute;
   background: #fff;
+  font-size:12px;
   >.node-title{
     display: flex;
-    justify-content: space-between;
-    >button{
-
-    }
+    justify-content: center;
     >span{
       user-select: none;
     }
   }
 }
 
-.connection-hub{
-  position: absolute;
+.node-opration{
+  display: flex;
+  justify-content: space-around;
+  flex-grow: 1;
+}
+
+.connection-inputs{
+  // position: absolute;
+  >div{
+    border:solid #000 1px;
+    height:15px;
+  }
 }
 
 </style>
