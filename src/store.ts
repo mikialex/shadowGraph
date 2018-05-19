@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { ViewFunctionNode } from '@/core/view-function-node';
 
 Vue.use(Vuex)
 
@@ -16,7 +17,7 @@ export default new Vuex.Store({
     lines:[],
   },
   mutations: {
-    addNode(state, node) {
+    addNode(state, node: ViewFunctionNode) {
        // todo check duplicate
       if (node.type === 'input') {
         state.inputNodeList.push(node);
@@ -24,7 +25,7 @@ export default new Vuex.Store({
         state.nodeList.push(node);
       }
     },
-    removeNode(state, node) {
+    removeNode(state, node: ViewFunctionNode) {
       if (node.type === 'input') {
         state.inputNodeList = state.inputNodeList.filter(n => {
           return n.id !== node.id;
@@ -34,6 +35,13 @@ export default new Vuex.Store({
           return n.id !== node.id;
         })
       }
+      node.refedNodes.forEach(refn => {
+        refn.inputParams.forEach(ref => {
+          if (ref.valueRef && node.id === ref.valueRef.id) {
+            ref.valueRef = null;
+          }
+        })
+      });
     },
     setNodeValue(state, payload) {
       const n = state.inputNodeList.filter(n => {

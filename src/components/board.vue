@@ -2,12 +2,17 @@
   <div>
     <div class="tool-bar">
       <button @click="eval">eval</button>
-      <div v-for="config in nodeTypeList" :key="config.name">
-        <button @click="switchCurrentType(config)"
+      <div >
+        <button
+        v-for="config in nodeTypeList" :key="config.name"
+         @click="switchCurrentType(config)"
         :class="{'current-type':config === currentType}"
         >
           {{config.type}}
         </button>
+        <button 
+        @click="switchCurrentType('')"
+        >normal</button>
       </div>
     </div>
     <NodeConnector></NodeConnector>
@@ -64,10 +69,12 @@ export default class NevaBoard extends Vue {
   nodeList=[];
   inputList = [];
   addNode(e: MouseEvent){
-    let newNode = new ViewFunctionNode(this.currentType);
-    newNode.positionX = e.clientX;
-    newNode.positionY = e.clientY;
-    this.$store.commit('addNode',newNode);
+    if(this.currentType){
+      let newNode = new ViewFunctionNode(this.currentType);
+      newNode.positionX = e.clientX;
+      newNode.positionY = e.clientY;
+      this.$store.commit('addNode',newNode);
+    }
   }
 
   eval(){
@@ -86,10 +93,10 @@ export default class NevaBoard extends Vue {
 }
 
 .tool-bar{
-
+  display: flex;
 }
 
 .current-type{
-  background: #f00;
+  background: #88f;
 }
 </style>

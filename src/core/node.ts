@@ -13,6 +13,7 @@ export class NevaNode{
   public id: number;
   public type = 'default type';
   public inputParams: NodeParams[];
+  public refedNodes: NevaNode[] = [];
   protected value: any = null;
   private config: NodeInterface;
   public isInputNode: boolean;
@@ -107,6 +108,7 @@ export class FunctionNode extends NevaNode {
     this.inputParams.forEach(input => {
       if (input.name === injectSlot) {
         input.valueRef = node;
+        node.refedNodes.push(this);
       }
     })
   }
