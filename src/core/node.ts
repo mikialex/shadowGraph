@@ -1,4 +1,4 @@
-import { NodeParamsDescriptor, NodeParams, NodeInterface } from "@/core/node-interface";
+import { NodeParamDescriptor, NodeParam, NodeInterface } from "@/core/node-interface";
 
 
 // const defaultValueMapper = {
@@ -12,11 +12,19 @@ let globalNodeId = 0;
 export class NevaNode{
   public id: number;
   public type = 'default type';
-  public inputParams: NodeParams[];
+  public inputParams: NodeParam[];
   public refedNodes: NevaNode[] = [];
   protected value: any = null;
   private config: NodeInterface;
   public isInputNode: boolean;
+
+  constructor(nodeConfig: NodeInterface) {
+    this.config = nodeConfig;
+    this.isInputNode = nodeConfig.isInputNode;
+    this.type = nodeConfig.type;
+    this.id = globalNodeId;
+    globalNodeId++;
+  }
 
   public getValue() {
     return this.value;
@@ -30,12 +38,48 @@ export class NevaNode{
     throw 'checkIfCanEvaluate not imple'
   }
 
-  constructor(nodeConfig: NodeInterface) {
-    this.config = nodeConfig;
-    this.isInputNode = nodeConfig.isInputNode;
-    this.type = nodeConfig.type;
-    this.id = globalNodeId;
-    globalNodeId++;
+  public pipeFrom(node: NevaNode, injectSlot: string) {
+    this.inputParams.forEach(input => {
+      if (input.name === injectSlot) {
+        input.valueRef = node;
+        node.refedNodes.push(this);
+      }
+    })
+  }
+
+  private removeRefedNode(node: NevaNode) {
+    this.refedNodes.filter(n => {
+      n.id === node.id;
+    })
+  }
+  public removeDependencyByNodeParam(inputPara: NodeParam) {
+    this.inputParams.forEach(input => {
+      if (inputPara.name === input.name && input.valueRef) {
+        input.valueRef.removeRefedNode(this);
+        input.valueRef = null;
+      }
+    })
+  }
+  public removeAllPiped() {
+    this.refedNodes.forEach(refn => {
+      refn.inputParams.forEach(ref => {
+        if (ref.valueRef && this.id === ref.valueRef.id) {
+          ref.valueRef = null;
+        }
+      })
+    });
+  }
+  public removeAllRefed() {
+    this.inputParams.forEach(input => {
+      if (input.valueRef) {
+        input.valueRef.removeRefedNode(this);
+        input.valueRef = null;
+      }
+    })
+  }
+  public removeAllConnection() {
+    this.removeAllPiped();
+    this.removeAllRefed();
   }
 }
 
@@ -101,16 +145,6 @@ export class FunctionNode extends NevaNode {
       }
     })
     return isvalid;
-  }
-
-
-  public pipeFrom(node:NevaNode, injectSlot:string) {
-    this.inputParams.forEach(input => {
-      if (input.name === injectSlot) {
-        input.valueRef = node;
-        node.refedNodes.push(this);
-      }
-    })
   }
 
 }

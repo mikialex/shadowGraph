@@ -43,7 +43,6 @@ export default class NodeConnector extends Vue {
       return para.valueRef !== null;
     })
     .map(para=>{
-      console.log(para)
       const nodeBefore = para.valueRef as ViewFunctionNode;
       let paraIndex;
       for (let i = 0; i < para.self.inputParams.length; i++) {

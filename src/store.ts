@@ -35,13 +35,7 @@ export default new Vuex.Store({
           return n.id !== node.id;
         })
       }
-      node.refedNodes.forEach(refn => {
-        refn.inputParams.forEach(ref => {
-          if (ref.valueRef && node.id === ref.valueRef.id) {
-            ref.valueRef = null;
-          }
-        })
-      });
+      node.removeAllConnection();
     },
     setNodeValue(state, payload) {
       const n = state.inputNodeList.filter(n => {

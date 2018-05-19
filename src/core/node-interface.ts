@@ -1,19 +1,19 @@
 import { NevaNode } from "@/core/node";
 
-export interface NodeParams {
+export interface NodeParam {
   name: string;
   valueRef: NevaNode;
   validation: boolean;
   self: NevaNode;
 }
 
-export interface NodeParamsDescriptor {
+export interface NodeParamDescriptor {
   name: string;
 }
 
 export interface NodeInterface {
   evaluFunction;
-  paramsDescriptor: NodeParamsDescriptor[];
+  paramsDescriptor: NodeParamDescriptor[];
   isInputNode?: boolean;
   type: string;
 }

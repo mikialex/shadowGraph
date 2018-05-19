@@ -10,7 +10,9 @@
     <div class="node-opration">
       <button @mousedown="startdrag">=</button>
       <button @click ="deleteNode">X</button>
-      <button @mousedown ="startConnection">-></button>
+      <button 
+      v-if="canConnect"
+      @mousedown ="startConnection">-></button>
     </div>
     <div class="connection-inputs" @mousemove="makeConnect">
       <div
@@ -19,6 +21,7 @@
       :class="input.name"
       >
         {{input.name}}
+        <button @click="removeDependency(input)">-</button>
       </div>
     </div>
     <slot></slot>
@@ -34,6 +37,11 @@ import { ViewFunctionNode } from '../core/view-function-node';
 export default class NodeUIWrap extends Vue {
   @Prop() node:ViewFunctionNode;
   @Prop() boardInfo;
+  @Prop({
+    default:true,
+    required:false,
+    type:Boolean
+  }) canConnect;
 
   get viewPositionX(){
     return this.node.positionX - this.boardInfo.offsetX + 'px';
