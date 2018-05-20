@@ -21,7 +21,9 @@
       :class="input.name"
       >
         {{input.name}}
-        <button @click="removeDependency(input)">-</button>
+        <button class="remove-dep"
+        v-if="input.valueRef"
+        @click="removeDependency(input)">-</button>
       </div>
     </div>
     <slot></slot>
@@ -53,6 +55,10 @@ export default class NodeUIWrap extends Vue {
 
   deleteNode(){
     this.$store.commit('removeNode',this.node);
+  }
+
+  removeDependency(input) {
+    this.node.removeDependencyByNodeParam(input);
   }
 
   isDraging = false;
@@ -166,7 +172,14 @@ export default class NodeUIWrap extends Vue {
   >div{
     border:solid #000 1px;
     height:15px;
+    display: flex;
+    justify-content: space-between;
   }
+}
+
+.remove-dep{
+  width:10px;
+  height: 10px;
 }
 
 </style>

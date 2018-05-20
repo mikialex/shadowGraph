@@ -11,6 +11,7 @@ let globalNodeId = 0;
 
 export class NevaNode{
   public id: number;
+  public isDirty = false;
   public type = 'default type';
   public inputParams: NodeParam[];
   public refedNodes: NevaNode[] = [];
@@ -25,6 +26,20 @@ export class NevaNode{
     this.id = globalNodeId;
     globalNodeId++;
   }
+
+  get canEval() {
+    if (this.isInputNode) {
+      return true;
+    }
+    let isvalid = true;
+    this.inputParams.forEach(input => {
+      if (!input.valueRef) {
+        isvalid = false;
+      }
+    })
+    return isvalid;
+  }
+
 
   public getValue() {
     return this.value;
@@ -101,50 +116,50 @@ export class FunctionNode extends NevaNode {
     });
   }
 
+  public updateGraphValue() {
+    const evalQueue = [];
 
-  public evaluate() {
-    const evalStack = [];
-    evalStack.push(this);
-    function collectDependency(node: NevaNode) {
-      for (let i = 0; i < node.inputParams.length; i++) {
-        const input = node.inputParams[i];
-        const ref = input.valueRef;
-        if (ref) {
-          if (evalStack.indexOf(ref) === -1) {
-            evalStack.push(ref);
-            collectDependency(ref);
-          }
-        }
+    let dirtyNodes = [];
+    function markDirty(node: NevaNode) {
+      if (node.canEval && !node.isDirty) {
+        dirtyNodes.push(node);
+        node.isDirty = true;
+        node.refedNodes.forEach(n => {
+          markDirty(n);
+        })
       }
     }
-    collectDependency(this);
-    console.log(evalStack);
+    markDirty(this);
 
-    evalStack.reverse().forEach((node: FunctionNode) => {
-      if (node.checkIfCanEvaluate()) {
-        const params = [];
-        node.inputParams.forEach(input => {
-          params.push(input.valueRef.getValue());
-        })
-        if (!node.isInputNode) {
-          node.value = node.evaluFunction(params);
+    function checkCanUpdate(node: NevaNode) {
+      let can = true;
+      node.inputParams.forEach(n => {
+        if (n.valueRef.isDirty) {
+          can = false;
         }
-      } else {
-        throw `node: ${node.id} 's params not ready`
+      })
+      return can;
+    }
+    while (dirtyNodes.length !== 0) {
+      dirtyNodes = dirtyNodes.filter(n => {
+        if (checkCanUpdate(n)) {
+          evalQueue.push(n);
+          return true;
+        } else {
+          return false;
+        }
+      })
+    }
+    evalQueue.forEach(n => {
+      const params = [];
+      n.inputParams.forEach(input => {
+        params.push(input.valueRef.getValue());
+      })
+      if (!n.isInputNode) {
+        n.value = n.evaluFunction(params);
       }
     })
-    console.log('node eval: ', this.getValue());
-    
-  }
 
-  public checkIfCanEvaluate() {
-    let isvalid = true;
-    this.inputParams.forEach(input => {
-      if (!input.valueRef) {
-        isvalid = false;
-      }
-    })
-    return isvalid;
   }
 
 }

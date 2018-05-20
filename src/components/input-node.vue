@@ -2,7 +2,10 @@
   <NodeUIWrap 
     :boardInfo="boardInfo"
     :node="node">
-    <input type="number" v-model="value">
+    <input 
+    type="number" 
+    :disabled="isDisplayMode"
+    v-model="value">
   </NodeUIWrap>
 </template>
 
@@ -20,6 +23,10 @@ export default class NevaNumberInputNodeCom extends Vue {
 
   @Prop() node: ViewFunctionNode
   @Prop() boardInfo;
+
+  get isDisplayMode(){
+    return this.node.inputParams[0].valueRef
+  }
 
   get value(){
     return this.node.getValue();
