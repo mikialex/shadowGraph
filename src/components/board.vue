@@ -37,7 +37,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import NevaNodeCom from "@/components/node.vue";
 import NevaNodeInputCom from "@/components/input-node.vue";
 import { ViewFunctionNode } from "../core/view-function-node";
-import {AdditionNodeConfig} from '../nodes/addition';NodeConnector
+import {AdditionNodeConfig} from '../nodes/addition';
 import {InputNodeConfig} from '../nodes/input';
 import NodeConnector from "@/components/connector.vue";
 

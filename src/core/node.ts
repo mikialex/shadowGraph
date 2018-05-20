@@ -141,22 +141,28 @@ export class FunctionNode extends NevaNode {
       return can;
     }
     while (dirtyNodes.length !== 0) {
-      dirtyNodes = dirtyNodes.filter(n => {
-        if (checkCanUpdate(n)) {
+      dirtyNodes = dirtyNodes.filter((n: NevaNode) => {
+        const checkSafeInputNode = n.isInputNode && !n.inputParams[0].valueRef;
+        if (checkSafeInputNode || checkCanUpdate(n)) {
+          n.isDirty = false;
           evalQueue.push(n);
-          return true;
-        } else {
           return false;
+        } else {
+          return true;
         }
       })
     }
     evalQueue.forEach(n => {
-      const params = [];
-      n.inputParams.forEach(input => {
-        params.push(input.valueRef.getValue());
-      })
       if (!n.isInputNode) {
+        const params = [];
+        n.inputParams.forEach(input => {
+          params.push(input.valueRef.getValue());
+        })
         n.value = n.evaluFunction(params);
+      } else {
+        if (n.inputParams[0].valueRef) {
+          n.value = n.inputParams[0].valueRef.value;
+        }
       }
     })
 

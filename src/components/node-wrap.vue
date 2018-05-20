@@ -4,8 +4,9 @@
     left: viewPositionX,
     top: viewPositionY
   }">
-    <div class="node-title">
-      <span draggable="false">{{node.type}}</span>
+    <div class="node-title"
+    :class="{'canteval-node':!node.canEval}">
+      <span draggable="false">{{node.type}}{{node.id}}</span>
     </div>
     <div class="node-opration">
       <button @mousedown="startdrag">=</button>
@@ -26,6 +27,9 @@
         @click="removeDependency(input)">-</button>
       </div>
     </div>
+    <!-- <div>
+      value: {{node.value}}
+    </div> -->
     <slot></slot>
   </div>
 </template>
@@ -180,6 +184,10 @@ export default class NodeUIWrap extends Vue {
 .remove-dep{
   width:10px;
   height: 10px;
+}
+
+.canteval-node{
+  color:#f00;
 }
 
 </style>

@@ -37,6 +37,7 @@ export default class NevaNumberInputNodeCom extends Vue {
       node:this.node,
       value:parseFloat(val)
     })
+    this.node.updateGraphValue();
   }
 
 }
