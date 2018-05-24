@@ -7,7 +7,8 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import NevaBoardCom from "@/components/board.vue"; // @ is an alias to /src
-import { NevaNode, FunctionNode } from "../core/node";
+import { NevaNode } from "../core/node";
+import { FunctionNode } from "../core/function-node";
 
 @Component({
   components: {

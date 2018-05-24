@@ -113,7 +113,8 @@ export default class NodeUIWrap extends Vue {
       && this.$store.state.connectFrom.id !== this.node.id
       && (e.target as HTMLElement).className){
         this.node.pipeFrom(this.$store.state.connectFrom,
-        (e.target as HTMLElement).className)
+        (e.target as HTMLElement).className);
+        this.node.updateGraphValue();
     }
   }
 

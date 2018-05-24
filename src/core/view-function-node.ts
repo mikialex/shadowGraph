@@ -1,4 +1,4 @@
-import { FunctionNode } from "@/core/node";
+import { FunctionNode } from "@/core/function-node";
 import { NodeInterface } from "@/core/node-interface";
 
 export class ViewFunctionNode extends FunctionNode{
