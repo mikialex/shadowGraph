@@ -90,4 +90,8 @@ export class NevaNode{
     this.removeAllPiped();
     this.removeAllRefed();
   }
+
+  public toJSON() {
+
+  }
 }

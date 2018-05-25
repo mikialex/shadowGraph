@@ -1,11 +1,18 @@
 import { NevaNode } from "./node";
 
+export interface NodeGroupParamDescriptor {
+  name: string;
+  mapToNode: NevaNode;
+  mapToNodeParamName: string;
+}
+
 export class NevaNodeGroup{
   constructor() {
     
   }
 
-  nodes: NevaNode[];
+  nodes: NevaNode[] = [];
+  paramsMap: NodeGroupParamDescriptor[] = [];
 
   checkIsDuplicate(node) {
     return this.nodes.indexOf(node) !== -1;
@@ -25,5 +32,38 @@ export class NevaNodeGroup{
     }
     this.nodes.splice(position, 1);
   }
+
+  defineGroupParam(node: NevaNode, paramName: string, groupParamName: string) {
+    // validation
+    this.paramsMap.map(outParam => {
+      if (outParam.mapToNode.id === node.id
+        && outParam.mapToNodeParamName === paramName) {
+        throw 'cant redefine same groupParam';
+      }
+      if (outParam.name === groupParamName) {
+        throw 'cant define groupParam with same value';
+      }
+    })
+
+    this.paramsMap.push({
+      name: groupParamName,
+      mapToNode: node,
+      mapToNodeParamName: paramName,
+    })
+  }
+
+  toJSON() {
+    
+  }
+
+}
+
+export class NevaNodeFunctionGroup extends NevaNodeGroup {
+  constructor() {
+    super();
+  }
+
   
+
+
 }
