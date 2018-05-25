@@ -39,6 +39,7 @@ import NevaNodeInputCom from "@/components/input-node.vue";
 import { ViewFunctionNode } from "../core/view-function-node";
 import {AdditionNodeConfig} from '../nodes/addition';
 import {InputNodeConfig} from '../nodes/input';
+import {ConditionNodeConfig} from '../nodes/condition';
 import NodeConnector from "@/components/connector.vue";
 
 @Component({
@@ -52,7 +53,8 @@ export default class NevaBoard extends Vue {
 
   nodeTypeList = [
     AdditionNodeConfig,
-    InputNodeConfig
+    InputNodeConfig,
+    ConditionNodeConfig
   ]
   currentType = InputNodeConfig;
   switchCurrentType(newType){

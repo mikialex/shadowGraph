@@ -68,7 +68,6 @@ export class FunctionNode extends NevaNode {
         }
       }
     })
-
   }
-
+  
 }
