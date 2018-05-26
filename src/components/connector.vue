@@ -39,9 +39,6 @@ export default class NodeConnector extends Vue {
     this.$store.state.nodeList.forEach(node => {
       params = params.concat(node.inputParams);
     })
-    this.$store.state.inputNodeList.forEach(node => {
-      params = params.concat(node.inputParams);
-    })
     params = params.filter(para=>{
       return para.valueRef !== null;
     })

@@ -2,13 +2,14 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { ViewFunctionNode } from '@/core/view-function-node';
 import { NodeType } from '@/core/node-interface';
+import { NodeManager } from '@/core/node-manager';
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    nodeManager: new NodeManager(),
     nodeList: [],
-    inputNodeList: [],
     connectorStartX: 0,
     connectorStartY: 0,
     connectorCursorX: 0,
@@ -20,26 +21,16 @@ export default new Vuex.Store({
   mutations: {
     addNode(state, node: ViewFunctionNode) {
        // todo check duplicate
-      if (node.type === NodeType.inputNode) {
-        state.inputNodeList.push(node);
-      } else {
-        state.nodeList.push(node);
-      }
+      state.nodeList.push(node);
     },
     removeNode(state, node: ViewFunctionNode) {
-      if (node.type === NodeType.inputNode) {
-        state.inputNodeList = state.inputNodeList.filter(n => {
-          return n.id !== node.id;
-        })
-      } else {
-        state.nodeList = state.nodeList.filter(n => {
-          return n.id !== node.id;
-        })
-      }
+      state.nodeList = state.nodeList.filter(n => {
+        return n.id !== node.id;
+      })
       node.removeAllConnection();
     },
     setNodeValue(state, payload) {
-      const n = state.inputNodeList.filter(n => {
+      const n = state.nodeList.filter(n => {
         return n.id === payload.node.id;
       })
       n[0].setValue(payload.value);

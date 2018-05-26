@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="tool-bar">
-      <button @click="eval">eval</button>
+      <GroupNodeListCom/>
       <div >
         <button
         v-for="config in nodeTypeList" :key="config.name"
@@ -11,22 +11,21 @@
           {{config.name}}
         </button>
         <button 
-        @click="switchCurrentType('')"
+        @click="switchCurrentType(null)"
         >normal</button>
       </div>
     </div>
     <NodeConnector></NodeConnector>
     <div class="neva-board" id="board" @mousedown.self="addNode">
-      <NevaNodeCom v-for="node in this.$store.state.nodeList" 
+      <NevaNodeCom v-for="node in functionNodeList" 
       :node="node"
       :boardInfo="boardInfo"
       :key="node.id"></NevaNodeCom>
 
-      <NevaNodeInputCom v-for="node in this.$store.state.inputNodeList" 
+      <NevaNodeInputCom v-for="node in inputList" 
       :node="node"
       :boardInfo="boardInfo"
       :key="node.id"></NevaNodeInputCom>
-
 
     </div>
   </div>
@@ -36,7 +35,9 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import NevaNodeCom from "@/components/node.vue";
 import NevaNodeInputCom from "@/components/input-node.vue";
+import GroupNodeListCom from "@/components/group-node-list.vue";
 import { ViewFunctionNode } from "../core/view-function-node";
+import { NodeType } from "../core/node-interface";
 import {AdditionNodeConfig} from '../nodes/addition';
 import {InputNodeConfig} from '../nodes/input';
 import {ConditionNodeConfig} from '../nodes/condition';
@@ -46,7 +47,8 @@ import NodeConnector from "@/components/connector.vue";
   components: {
     NevaNodeCom,
     NevaNodeInputCom,
-    NodeConnector
+    NodeConnector,
+    GroupNodeListCom,
   }
 })
 export default class NevaBoard extends Vue {
@@ -56,7 +58,7 @@ export default class NevaBoard extends Vue {
     InputNodeConfig,
     ConditionNodeConfig
   ]
-  currentType = InputNodeConfig;
+  currentType = null;
   switchCurrentType(newType){
     this.currentType = newType;
   }
@@ -68,8 +70,18 @@ export default class NevaBoard extends Vue {
     }
   }
 
-  nodeList=[];
-  inputList = [];
+  get inputList(){
+    return this.$store.state.nodeList.filter(n=>{
+      return n.type === NodeType.inputNode
+    })
+  }
+
+  get functionNodeList(){
+    return this.$store.state.nodeList.filter(n=>{
+      return n.type !== NodeType.inputNode
+    })
+  }
+
   addNode(e: MouseEvent){
     if(this.currentType){
       let newNode = new ViewFunctionNode(this.currentType);
@@ -77,15 +89,12 @@ export default class NevaBoard extends Vue {
       newNode.positionY = e.clientY;
       this.$store.commit('addNode',newNode);
     }
+    this.switchCurrentType(null);
   }
 
-  eval(){
-
-  }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .neva-board{
   width:600px;
