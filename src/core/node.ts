@@ -13,16 +13,18 @@ export class NevaNode{
   public refedNodes: NevaNode[] = [];
   protected value: any = null;
   private config: NodeConfig;
-  public isInputNode: boolean;
   public belongToGroup: NevaNodeGroup;
 
-  constructor(nodeConfig: NodeConfig) {
+  constructor(nodeConfig: NodeConfig, ) {
     this.config = nodeConfig;
-    this.isInputNode = nodeConfig.isInputNode;
     this.type = nodeConfig.type;
     this.name = nodeConfig.name;
     this.id = globalNodeId;
     globalNodeId++;
+  }
+
+  get isInputNode() {
+    return this.type === NodeType.inputNode;
   }
 
   get canEval() {

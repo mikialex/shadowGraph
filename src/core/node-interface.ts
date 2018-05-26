@@ -20,7 +20,6 @@ export enum NodeType{
 export interface NodeConfig {
   evaluFunction;
   paramsDescriptor: NodeParamDescriptor[];
-  isInputNode?: boolean;
   type: NodeType;
   name: string;
 }
