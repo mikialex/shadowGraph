@@ -36,7 +36,7 @@ export default class NodeConnector extends Vue {
 
   get lines(){
     let params = [];
-    this.$store.state.nodeList.forEach(node => {
+    this.$store.state.nodeManager.currentNodeGroup.nodes.forEach(node => {
       params = params.concat(node.inputParams);
     })
     params = params.filter(para=>{

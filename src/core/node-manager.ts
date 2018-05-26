@@ -6,10 +6,12 @@ export class NodeManager {
     this.mainNodeGroup = new NevaNodeGroup({
       name:'main'
     });
+    this.currentNodeGroup = this.mainNodeGroup;
   }
 
   nodeGroupList: NevaNodeGroup[] =[];
   mainNodeGroup: NevaNodeGroup;
+  currentNodeGroup: NevaNodeGroup;
 
   nodeConfigList: NodeConfig[];
 

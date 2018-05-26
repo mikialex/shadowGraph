@@ -32,6 +32,7 @@ export class NevaNodeGroup{
       return;
     }
     this.nodes.splice(position, 1);
+    node.removeAllConnection();
   }
 
   defineGroupParam(node: NevaNode, paramName: string, groupParamName: string) {

@@ -71,13 +71,13 @@ export default class NevaBoard extends Vue {
   }
 
   get inputList(){
-    return this.$store.state.nodeList.filter(n=>{
+    return this.$store.state.nodeManager.currentNodeGroup.nodes.filter(n=>{
       return n.type === NodeType.inputNode
     })
   }
 
   get functionNodeList(){
-    return this.$store.state.nodeList.filter(n=>{
+    return this.$store.state.nodeManager.currentNodeGroup.nodes.filter(n=>{
       return n.type !== NodeType.inputNode
     })
   }
