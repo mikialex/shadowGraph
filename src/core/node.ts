@@ -1,4 +1,5 @@
-import { NodeParamDescriptor, NodeParam, NodeInterface } from "@/core/node-interface";
+import { NodeParamDescriptor, NodeParam, NodeInterface } from "./node-interface";
+import { NevaNodeGroup } from "./node-group";
 
 
 let globalNodeId = 0;
@@ -12,6 +13,7 @@ export class NevaNode{
   protected value: any = null;
   private config: NodeInterface;
   public isInputNode: boolean;
+  public belongToGroup: NevaNodeGroup;
 
   constructor(nodeConfig: NodeInterface) {
     this.config = nodeConfig;
@@ -92,6 +94,8 @@ export class NevaNode{
   }
 
   public toJSON() {
-
+    return {
+      
+    }
   }
 }
