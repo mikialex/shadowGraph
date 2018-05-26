@@ -1,10 +1,10 @@
-import { NevaNode } from "@/core/node";
-import { NodeInterface } from "@/core/node-interface";
+import { NevaNode } from "./node";
+import { NodeConfig } from "./node-interface";
 
 export class FunctionNode extends NevaNode {
   public evaluFunction;
 
-  constructor(nodeConfig: NodeInterface) {
+  constructor(nodeConfig: NodeConfig) {
     super(nodeConfig);
     this.evaluFunction = nodeConfig.evaluFunction;
 

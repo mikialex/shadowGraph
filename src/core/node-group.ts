@@ -1,4 +1,5 @@
 import { NevaNode } from "./node";
+import { NodeConfig } from "./node-interface";
 
 export interface NodeGroupParamDescriptor {
   name: string;
@@ -6,11 +7,18 @@ export interface NodeGroupParamDescriptor {
   mapToNodeParamName: string;
 }
 
+export interface NevaNodeGroupConfig{
+  name:string
+}
+
 export class NevaNodeGroup{
-  constructor() {
-    
+  constructor(config: NevaNodeGroupConfig) {
+    this.config = config;
+    this.name = config.name;
   }
 
+  name: string;
+  config: NevaNodeGroupConfig;
   nodes: NevaNode[] = [];
   paramsMap: NodeGroupParamDescriptor[] = [];
   returnNode: NevaNode;
@@ -81,12 +89,108 @@ export class NevaNodeGroup{
 
 }
 
+export class EvalFrame{
+  constructor(nodeGroup: NevaNodeFunctionGroup) {
+    
+  }
+}
+
 export class NevaNodeFunctionGroup extends NevaNodeGroup {
-  constructor() {
-    super();
+  constructor(config: NevaNodeGroupConfig) {
+    super(config);
+  }
+  evalStack: EvalFrame[];
+  evalQueue: NevaNode[];
+  get canEval() {
+    return true;
   }
 
-  
+  private clearEvalStates() {
+    
+  }
+
+  private createEvalFrame() {
+    this.evalStack.push(new EvalFrame(this));
+    this.clearEvalStates();
+  }
 
 
+  private updateEvalDependency() {
+    this.evalQueue = [];
+
+    // get input Nodes
+    const paramNodes = [];
+    this.paramsMap.forEach(m => {
+      let found = false;
+      paramNodes.forEach(n => {
+        if (m.mapToNode.id === n.id) {
+          found = true;
+        }
+      })
+      if (found === false) {
+        paramNodes.push(m.mapToNode)
+      }
+    })
+
+    this.evalQueue = this.evalQueue.concat(paramNodes);
+
+    let dirtyNodes = [];
+    function markDirty(node: NevaNode) {
+      if (node.canEval && !node.isDirty) {
+        dirtyNodes.push(node);
+        node.isDirty = true;
+        node.refedNodes.forEach(n => {
+          markDirty(n);
+        })
+      }
+    }
+    paramNodes.forEach(n => { markDirty(n) });
+
+    function checkCanUpdate(node: NevaNode) {
+      let can = true;
+      node.inputParams.forEach(n => {
+        if (n.valueRef.isDirty) {
+          can = false;
+        }
+      })
+      return can;
+    }
+
+    // TODO need test list optimize here
+    while (dirtyNodes.length !== 0) {
+      dirtyNodes = dirtyNodes.filter((n: NevaNode) => {
+        const checkSafeInputNode = n.isInputNode && !n.inputParams[0].valueRef;
+        if (checkSafeInputNode || checkCanUpdate(n)) {
+          n.isDirty = false;
+          this.evalQueue.push(n);
+          return false;
+        } else {
+          return true;
+        }
+      })
+    }
+  }
+
+
+  eval() {
+    
+  }
+
+
+}
+
+
+export class NodeGroupManager {
+  constructor() {
+
+  }
+
+  nodeGroupList: NevaNodeGroup[];
+  mainNodeGroup: NevaNodeGroup;
+
+  nodeConfigList: NodeConfig;
+
+  registerNodeConfig() {
+    
+  }
 }

@@ -11,7 +11,7 @@ export interface NodeParamDescriptor {
   name: string;
 }
 
-export interface NodeInterface {
+export interface NodeConfig {
   evaluFunction;
   paramsDescriptor: NodeParamDescriptor[];
   isInputNode?: boolean;

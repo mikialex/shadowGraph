@@ -1,4 +1,4 @@
-import { NodeParamDescriptor, NodeParam, NodeInterface } from "./node-interface";
+import { NodeParamDescriptor, NodeParam, NodeConfig } from "./node-interface";
 import { NevaNodeGroup } from "./node-group";
 
 
@@ -11,11 +11,11 @@ export class NevaNode{
   public inputParams: NodeParam[];
   public refedNodes: NevaNode[] = [];
   protected value: any = null;
-  private config: NodeInterface;
+  private config: NodeConfig;
   public isInputNode: boolean;
   public belongToGroup: NevaNodeGroup;
 
-  constructor(nodeConfig: NodeInterface) {
+  constructor(nodeConfig: NodeConfig) {
     this.config = nodeConfig;
     this.isInputNode = nodeConfig.isInputNode;
     this.type = nodeConfig.type;

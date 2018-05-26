@@ -1,8 +1,8 @@
 import { FunctionNode } from "@/core/function-node";
-import { NodeInterface } from "@/core/node-interface";
+import { NodeConfig } from "@/core/node-interface";
 
 export class ViewFunctionNode extends FunctionNode{
-  constructor(nodeConfig: NodeInterface) {
+  constructor(nodeConfig: NodeConfig) {
     super(nodeConfig);
     nodeConfig.paramsDescriptor.forEach((discriptor, index) => {
       this.inputsPositions.push({
