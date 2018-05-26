@@ -1,5 +1,8 @@
+import { NodeType } from "../core/node-interface";
+
 export const ConditionNodeConfig = {
-  type: 'condition',
+  name: 'condition',
+  type: NodeType.functionNode,
   evaluFunction: (params: any[]) => {
     if (params[0]) {
       return params[1];

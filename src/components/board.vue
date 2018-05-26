@@ -8,7 +8,7 @@
          @click="switchCurrentType(config)"
         :class="{'current-type':config === currentType}"
         >
-          {{config.type}}
+          {{config.name}}
         </button>
         <button 
         @click="switchCurrentType('')"

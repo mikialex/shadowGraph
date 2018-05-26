@@ -1,5 +1,8 @@
+import { NodeType } from "../core/node-interface";
+
 export const AdditionNodeConfig = {
-  type: 'addition',
+  type: NodeType.functionNode,
+  name: 'addition',
   evaluFunction: (params: any[]) => {
     return params[0] + params[1];
   },

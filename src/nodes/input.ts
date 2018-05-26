@@ -1,5 +1,8 @@
+import { NodeType } from "../core/node-interface";
+
 export const InputNodeConfig = {
-  type: 'input',
+  name: 'input',
+  type:NodeType.inputNode,
   evaluFunction: undefined,
   isInputNode: true,
   paramsDescriptor: [

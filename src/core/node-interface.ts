@@ -1,4 +1,4 @@
-import { NevaNode } from "@/core/node";
+import { NevaNode } from "./node";
 
 export interface NodeParam {
   name: string;
@@ -11,9 +11,26 @@ export interface NodeParamDescriptor {
   name: string;
 }
 
+export enum NodeType{
+  inputNode,
+  groupProxy,
+  functionNode,
+}
+
 export interface NodeConfig {
   evaluFunction;
   paramsDescriptor: NodeParamDescriptor[];
   isInputNode?: boolean;
-  type: string;
+  type: NodeType;
+  name: string;
+}
+
+export interface NodeGroupParamDescriptor {
+  name: string;
+  mapToNode: NevaNode;
+  mapToNodeParamName: string;
+}
+
+export interface NodeGroupConfig {
+  name: string
 }

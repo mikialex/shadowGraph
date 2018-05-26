@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { ViewFunctionNode } from '@/core/view-function-node';
+import { NodeType } from '@/core/node-interface';
 
 Vue.use(Vuex)
 
@@ -19,14 +20,14 @@ export default new Vuex.Store({
   mutations: {
     addNode(state, node: ViewFunctionNode) {
        // todo check duplicate
-      if (node.type === 'input') {
+      if (node.type === NodeType.inputNode) {
         state.inputNodeList.push(node);
       } else {
         state.nodeList.push(node);
       }
     },
     removeNode(state, node: ViewFunctionNode) {
-      if (node.type === 'input') {
+      if (node.type === NodeType.inputNode) {
         state.inputNodeList = state.inputNodeList.filter(n => {
           return n.id !== node.id;
         })

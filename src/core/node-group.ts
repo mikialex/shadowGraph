@@ -1,24 +1,15 @@
 import { NevaNode } from "./node";
-import { NodeConfig } from "./node-interface";
+import { NodeConfig, NodeGroupConfig, NodeGroupParamDescriptor } from "./node-interface";
 
-export interface NodeGroupParamDescriptor {
-  name: string;
-  mapToNode: NevaNode;
-  mapToNodeParamName: string;
-}
-
-export interface NevaNodeGroupConfig{
-  name:string
-}
 
 export class NevaNodeGroup{
-  constructor(config: NevaNodeGroupConfig) {
+  constructor(config: NodeGroupConfig) {
     this.config = config;
     this.name = config.name;
   }
 
   name: string;
-  config: NevaNodeGroupConfig;
+  config: NodeGroupConfig;
   nodes: NevaNode[] = [];
   paramsMap: NodeGroupParamDescriptor[] = [];
   returnNode: NevaNode;
@@ -96,7 +87,7 @@ export class EvalFrame{
 }
 
 export class NevaNodeFunctionGroup extends NevaNodeGroup {
-  constructor(config: NevaNodeGroupConfig) {
+  constructor(config: NodeGroupConfig) {
     super(config);
   }
   evalStack: EvalFrame[];
@@ -188,9 +179,9 @@ export class NodeGroupManager {
   nodeGroupList: NevaNodeGroup[];
   mainNodeGroup: NevaNodeGroup;
 
-  nodeConfigList: NodeConfig;
+  nodeConfigList: NodeConfig[];
 
-  registerNodeConfig() {
-    
+  registerNodeConfig(conf: NodeConfig) {
+    this.nodeConfigList.push(conf);
   }
 }
