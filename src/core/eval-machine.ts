@@ -22,7 +22,7 @@ export class NevaNodeEvalMachine{
   }
 
   eval() {
-    
+    // this.nodeManager.mainNodeGroup
   }
 
   nodeManager: NodeManager;
@@ -30,7 +30,7 @@ export class NevaNodeEvalMachine{
   currentFrame: EvalFrame;
 
   private clearEvalStates() {
-
+    
   }
 
   private createNewEvalFrame(nodeGroup: NevaNodeFunctionGroup) {
