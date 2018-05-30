@@ -1,14 +1,15 @@
 import { NevaNode } from "./node";
 import { NodeConfig, NodeGroupConfig, NodeGroupParamDescriptor, NodeType } from "./node-interface";
 
-
+let globalNodeGroupId = 0;
 export class NevaNodeGroup{
   constructor(config: NodeGroupConfig) {
     this.config = config;
-    this.name = config.name;
+    this.id = globalNodeGroupId;
+    globalNodeGroupId++;
   }
 
-  name: string;
+  id: number;
   config: NodeGroupConfig;
   nodes: NevaNode[] = [];
   paramsMap: NodeGroupParamDescriptor[] = [];

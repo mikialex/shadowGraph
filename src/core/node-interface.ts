@@ -1,6 +1,6 @@
 import { NevaNode } from "./node";
 
-export interface NodeParam {
+export interface NodeParam { 
   name: string;
   valueRef: NevaNode;
   validation: boolean;
@@ -31,5 +31,4 @@ export interface NodeGroupParamDescriptor {
 }
 
 export interface NodeGroupConfig {
-  name: string
 }
