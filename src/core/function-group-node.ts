@@ -16,4 +16,9 @@ export class FunctionGroupNode extends NevaNode{
     //   });
     // });
   }
+
+  eval() {
+    
+  }
+
 }

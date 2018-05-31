@@ -56,18 +56,22 @@ export class FunctionNode extends NevaNode {
       })
     }
     evalQueue.forEach(n => {
-      if (!n.isInputNode) {
-        const params = [];
-        n.inputParams.forEach(input => {
-          params.push(input.valueRef.getValue());
-        })
-        n.value = n.evaluFunction(params);
-      } else {
-        if (n.inputParams[0].valueRef) {
-          n.value = n.inputParams[0].valueRef.value;
-        }
-      }
+      n.eval();
     })
+  }
+
+  eval() {
+    if (this.isInputNode) {
+      if (this.inputParams[0].valueRef) {
+        this.value = this.inputParams[0].valueRef.getValue();
+      }
+    } else { // normal functional node
+      const params = [];
+      this.inputParams.forEach(input => {
+        params.push(input.valueRef.getValue());
+      })
+      this.value = this.evaluFunction(params);
+    }
   }
   
 }

@@ -1,5 +1,6 @@
 import { NevaNode } from "./node";
 import { NodeConfig, NodeGroupConfig, NodeGroupParamDescriptor, NodeType } from "./node-interface";
+import { FunctionNode } from "@/core/function-node";
 
 let globalNodeGroupId = 0;
 export class NevaNodeGroup{
@@ -89,10 +90,21 @@ export class NevaNodeFunctionGroup extends NevaNodeGroup {
   constructor(config: NodeGroupConfig) {
     super(config);
   }
-  evalQueue: NevaNode[];
+  evalQueue: FunctionNode[];
+  private shouldUpdateEvalDependency = false;
 
   get canEval() {
     return true;
+  }
+
+  public eval() {
+    if (this.shouldUpdateEvalDependency) {
+      this.updateEvalDependency()
+    }
+    this.evalQueue.forEach(node => {
+      node.eval();
+    })
+    return this.returnNode.getValue();
   }
 
   private updateEvalDependency() {
@@ -138,7 +150,7 @@ export class NevaNodeFunctionGroup extends NevaNodeGroup {
 
     // TODO need test list optimize here
     while (dirtyNodes.length !== 0) {
-      dirtyNodes = dirtyNodes.filter((n: NevaNode) => {
+      dirtyNodes = dirtyNodes.filter((n: FunctionNode) => {
         const checkSafeInputNode = n.isInputNode && !n.inputParams[0].valueRef;
         if (checkSafeInputNode || checkCanUpdate(n)) {
           n.isDirty = false;

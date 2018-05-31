@@ -27,6 +27,10 @@ export class NevaNode{
     return this.type === NodeType.inputNode;
   }
 
+  get isProxyGroupNode() {
+    return this.type === NodeType.groupProxy;
+  }
+
   get canEval() {
     if (this.isInputNode) {
       return true;

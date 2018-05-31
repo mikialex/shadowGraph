@@ -23,6 +23,8 @@ export class NevaNodeEvalMachine{
 
   eval() {
     // this.nodeManager.mainNodeGroup
+    // const demo = new NevaNodeFunctionGroup({});
+    // demo.eval();
   }
 
   nodeManager: NodeManager;
