@@ -22,6 +22,8 @@ export interface NodeConfig {
   paramsDescriptor: NodeParamDescriptor[];
   type: NodeType;
   name: string;
+  codeGen: string;
+  defaultValue?: number;
 }
 
 export interface NodeGroupParamDescriptor {

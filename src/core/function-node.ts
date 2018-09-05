@@ -3,10 +3,12 @@ import { NodeConfig } from "./node-interface";
 
 export class FunctionNode extends NevaNode {
   public evaluFunction;
+  public codeGenTemplate:string;
 
   constructor(nodeConfig: NodeConfig) {
     super(nodeConfig);
     this.evaluFunction = nodeConfig.evaluFunction;
+    this.codeGenTemplate = nodeConfig.codeGen;
 
     this.inputParams = [];
     nodeConfig.paramsDescriptor.forEach(discriptor => {
@@ -58,6 +60,22 @@ export class FunctionNode extends NevaNode {
     evalQueue.forEach(n => {
       n.eval();
     })
+  }
+
+  codeGen(): string {
+    let str = this.codeGenTemplate;
+    if (this.isInputNode) {
+      str = str.replace(`{{p1}}`, this.value.toString());
+    } else {
+      this.inputParams.forEach((input, index) => {
+        if (this.isInputNode) {
+          str = str.replace(`{{p${index + 1}}}`, this.value);
+        } else {
+          str = str.replace(`{{p${index + 1}}}`, input.valueRef.codeGen());
+        }
+      })
+    }
+    return str;
   }
 
   eval() {

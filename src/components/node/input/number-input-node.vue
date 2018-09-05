@@ -11,8 +11,8 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { ViewFunctionNode } from "../core/view-function-node";
-import NodeUIWrap from './node-wrap.vue';
+import { ViewFunctionNode } from "@/core/view-function-node";
+import NodeUIWrap from '@/components/node-wrap.vue';
 
 @Component({
   components: {

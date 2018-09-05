@@ -1,6 +1,5 @@
 import { NevaNodeGroup } from "./node-group";
 import { NodeConfig } from "./node-interface";
-import { NevaNodeEvalMachine } from "@/core/eval-machine";
 
 export class NodeManager {
   constructor() {
@@ -8,10 +7,7 @@ export class NodeManager {
       name:'main'
     });
     this.currentNodeGroup = this.mainNodeGroup;
-    this.evalMachine = new NevaNodeEvalMachine(this);
   }
-
-  evalMachine: NevaNodeEvalMachine;
 
   nodeGroupList: NevaNodeGroup[] =[];
   mainNodeGroup: NevaNodeGroup;

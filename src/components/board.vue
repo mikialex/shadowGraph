@@ -34,7 +34,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import NevaNodeCom from "@/components/node.vue";
-import NevaNodeInputCom from "@/components/input-node.vue";
+import NevaNodeInputCom from "@/components/node/input/number-input-node.vue";
 import GroupNodeListCom from "@/components/group-node-list.vue";
 import { ViewFunctionNode } from "../core/view-function-node";
 import { NodeType } from "../core/node-interface";

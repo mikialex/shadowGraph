@@ -11,15 +11,19 @@ export class NevaNode{
   public type: NodeType;
   public inputParams: NodeParam[];
   public refedNodes: NevaNode[] = [];
+  public preNode: NevaNode;
   protected value: any = null;
   private config: NodeConfig;
   public belongToGroup: NevaNodeGroup;
 
-  constructor(nodeConfig: NodeConfig, ) {
+  constructor(nodeConfig: NodeConfig) {
     this.config = nodeConfig;
     this.type = nodeConfig.type;
     this.name = nodeConfig.name;
     this.id = globalNodeId;
+    if (nodeConfig.defaultValue !== undefined) {
+      this.value = nodeConfig.defaultValue;
+    }
     globalNodeId++;
   }
 
@@ -44,6 +48,9 @@ export class NevaNode{
     return isvalid;
   }
 
+  codeGen(): string {
+    throw 'not implement';
+  }
 
   public getValue() {
     return this.value;

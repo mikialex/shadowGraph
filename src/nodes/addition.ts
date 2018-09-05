@@ -14,5 +14,6 @@ export const AdditionNodeConfig = {
     {
       name: "number2"
     }
-  ]
+  ],
+  codeGen: '({{p1}} + {{p2}})'
 }

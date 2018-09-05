@@ -4,13 +4,22 @@
     left: viewPositionX,
     top: viewPositionY
   }">
+
+    <div class="menu" v-if="hasExpandMenu">
+      <button @click ="deleteNode">delete node</button>
+      <button @click ="log">code gen</button>
+      <button @click="hasExpandMenu = false">close</button>
+    </div>
+    <div class="menu-mask" v-if="hasExpandMenu" @click="hasExpandMenu = false"></div>
+
     <div class="node-title"
     :class="{'canteval-node':!node.canEval}">
       <span draggable="false">{{node.name}}{{node.id}}</span>
     </div>
     <div class="node-opration">
       <button @mousedown="startdrag">=</button>
-      <button @click ="deleteNode">X</button>
+      <button @click="hasExpandMenu = true">m</button>
+
       <button 
       v-if="canConnect"
       @mousedown ="startConnection">-></button>
@@ -57,6 +66,10 @@ export default class NodeUIWrap extends Vue {
     return this.node.positionY- this.boardInfo.offsetY + 'px';
   }
 
+  log(){
+    console.log(this.node.codeGen());
+  }
+
   deleteNode(){
     this.$store.commit('removeNode',this.node);
   }
@@ -64,6 +77,8 @@ export default class NodeUIWrap extends Vue {
   removeDependency(input) {
     this.node.removeDependencyByNodeParam(input);
   }
+
+  hasExpandMenu = false;
 
   isDraging = false;
   originX = 0;
@@ -180,6 +195,30 @@ export default class NodeUIWrap extends Vue {
     display: flex;
     justify-content: space-between;
   }
+}
+
+.menu{
+  z-index:9999;
+  position:absolute;
+  top:0px;
+  right:0px;
+  >button{
+    width:80px;
+    height:20px;
+    background: #fff;
+    margin:0px;
+    border:0px;
+    box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.123);
+  }
+}
+
+.menu-mask{
+  z-index: 9998;
+  position: fixed;
+  top:0px;
+  left:0px;
+  width:100vw;
+  height:100vh;
 }
 
 .remove-dep{
