@@ -22,10 +22,10 @@
       :boardInfo="boardInfo"
       :key="node.id"></NevaNodeCom>
 
-      <NevaNodeInputCom v-for="node in inputList" 
+      <NevaNodeNumberInputCom v-for="node in inputList" 
       :node="node"
       :boardInfo="boardInfo"
-      :key="node.id"></NevaNodeInputCom>
+      :key="node.id"></NevaNodeNumberInputCom>
 
     </div>
   </div>
@@ -34,7 +34,8 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import NevaNodeCom from "@/components/node.vue";
-import NevaNodeInputCom from "@/components/node/input/number-input-node.vue";
+import NevaNodeNumberInputCom from "@/components/node/input/number-input-node.vue";
+import NevaNodeBooleanInputCom from "@/components/node/input/number-input-node.vue";
 import GroupNodeListCom from "@/components/group-node-list.vue";
 import { ViewFunctionNode } from "../core/view-function-node";
 import { NodeType } from "../core/node-interface";
@@ -46,7 +47,7 @@ import NodeConnector from "@/components/connector.vue";
 @Component({
   components: {
     NevaNodeCom,
-    NevaNodeInputCom,
+    NevaNodeNumberInputCom,NevaNodeBooleanInputCom,
     NodeConnector,
     GroupNodeListCom,
   }
@@ -72,6 +73,12 @@ export default class NevaBoard extends Vue {
 
   get inputList(){
     return this.$store.state.nodeManager.currentNodeGroup.nodes.filter(n=>{
+      return n.type === NodeType.inputNode
+    })
+  }
+
+  get numberInputList(){
+    return this.inputList.filter(n=>{
       return n.type === NodeType.inputNode
     })
   }

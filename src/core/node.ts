@@ -1,11 +1,9 @@
 import { NodeParamDescriptor, NodeParam, NodeConfig, NodeType } from "./node-interface";
 import { NevaNodeGroup } from "./node-group";
-
-
-let globalNodeId = 0;
+import { generateUUID } from "../util/uuid";
 
 export class NevaNode{
-  public id: number;
+  public id: string;
   public name: string;
   public isDirty = false;
   public type: NodeType;
@@ -20,11 +18,10 @@ export class NevaNode{
     this.config = nodeConfig;
     this.type = nodeConfig.type;
     this.name = nodeConfig.name;
-    this.id = globalNodeId;
+    this.id = generateUUID();
     if (nodeConfig.defaultValue !== undefined) {
       this.value = nodeConfig.defaultValue;
     }
-    globalNodeId++;
   }
 
   get isInputNode() {
@@ -110,7 +107,12 @@ export class NevaNode{
 
   public toJSON() {
     return {
-      
+      id: this.id,
+      config: this.config,
+      InputValue: this.isInputNode ? this.value : undefined, 
+      refNodes: this.inputParams.map(param => {
+        return param.valueRef.id
+      })
     }
   }
 }
