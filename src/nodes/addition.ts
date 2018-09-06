@@ -1,6 +1,6 @@
-import { NodeType } from "../core/node-interface";
+import { NodeType, NodeConfig } from "../core/node-interface";
 
-export const AdditionNodeConfig = {
+export const AdditionNodeConfig: NodeConfig = {
   type: NodeType.functionNode,
   name: 'addition',
   evaluFunction: (params: any[]) => {

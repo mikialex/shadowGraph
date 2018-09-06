@@ -1,30 +1,41 @@
 import { NevaNodeGroup } from "./node-group";
 import { NodeConfig } from "./node-interface";
 
+import { AdditionNodeConfig } from '../nodes/addition';
+import { InputNodeConfig } from '../nodes/input';
+import { ConditionNodeConfig } from '../nodes/condition';
+
+const innerNodeTypes = [AdditionNodeConfig, InputNodeConfig, ConditionNodeConfig];
+
 export class NodeManager {
   constructor() {
     this.mainNodeGroup = new NevaNodeGroup({
-      name:'main'
+      name: 'main'
     });
     this.currentNodeGroup = this.mainNodeGroup;
+    innerNodeTypes.forEach(conf => {
+      this.registerNodeConfig(conf);
+    })
   }
 
-  nodeGroupList: NevaNodeGroup[] =[];
+  nodeGroupList: NevaNodeGroup[] = [];
   mainNodeGroup: NevaNodeGroup;
   currentNodeGroup: NevaNodeGroup;
 
-  nodeConfigList: NodeConfig[];
+  nodeConfigs: { [index: string]: NodeConfig } = {};
 
   registerNodeConfig(conf: NodeConfig) {
-    this.nodeConfigList.push(conf);
+    this.nodeConfigs[conf.name] = conf;
   }
 
   toJSON() {
-    
+    return {
+
+    }
   }
 
   downLoadAll() {
-    
+
   }
 
 }

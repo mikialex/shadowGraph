@@ -1,6 +1,6 @@
-import { NodeType } from "../core/node-interface";
+import { NodeType, NodeConfig } from "../core/node-interface";
 
-export const ConditionNodeConfig = {
+export const ConditionNodeConfig: NodeConfig = {
   name: 'condition',
   type: NodeType.functionNode,
   evaluFunction: (params: any[]) => {
@@ -21,5 +21,6 @@ export const ConditionNodeConfig = {
     {
       name: "falseValue"
     },
-  ]
+  ],
+  codeGen: ''
 }

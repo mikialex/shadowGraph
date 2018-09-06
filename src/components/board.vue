@@ -39,9 +39,6 @@ import NevaNodeBooleanInputCom from "@/components/node/input/number-input-node.v
 import GroupNodeListCom from "@/components/group-node-list.vue";
 import { ViewFunctionNode } from "../core/view-function-node";
 import { NodeType } from "../core/node-interface";
-import {AdditionNodeConfig} from '../nodes/addition';
-import {InputNodeConfig} from '../nodes/input';
-import {ConditionNodeConfig} from '../nodes/condition';
 import NodeConnector from "@/components/connector.vue";
 
 @Component({
@@ -53,15 +50,14 @@ import NodeConnector from "@/components/connector.vue";
   }
 })
 export default class NevaBoard extends Vue {
-
-  nodeTypeList = [
-    AdditionNodeConfig,
-    InputNodeConfig,
-    ConditionNodeConfig
-  ]
   currentType = null;
   switchCurrentType(newType){
     this.currentType = newType;
+  }
+
+  get nodeTypeList() {
+    return Object.keys(this.manager.nodeConfigs).map(key =>
+    this.manager.nodeConfigs[key])
   }
 
   get boardInfo(){
@@ -72,7 +68,7 @@ export default class NevaBoard extends Vue {
   }
 
   get inputList(){
-    return this.$store.state.nodeManager.currentNodeGroup.nodes.filter(n=>{
+    return this.manager.currentNodeGroup.nodes.filter(n=>{
       return n.type === NodeType.inputNode
     })
   }
@@ -83,6 +79,10 @@ export default class NevaBoard extends Vue {
     })
   }
 
+  get manager() {
+    return this.$store.state.nodeManager;
+  }
+
   get functionNodeList(){
     return this.$store.state.nodeManager.currentNodeGroup.nodes.filter(n=>{
       return n.type !== NodeType.inputNode
@@ -91,7 +91,7 @@ export default class NevaBoard extends Vue {
 
   addNode(e: MouseEvent){
     if(this.currentType){
-      let newNode = new ViewFunctionNode(this.currentType);
+      let newNode = new ViewFunctionNode(this.currentType.name, this.manager);
       newNode.positionX = e.clientX;
       newNode.positionY = e.clientY;
       this.$store.commit('addNode',newNode);

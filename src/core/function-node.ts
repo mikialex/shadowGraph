@@ -1,12 +1,14 @@
 import { NevaNode } from "./node";
 import { NodeConfig } from "./node-interface";
+import { NodeManager } from "@/core/node-manager";
 
 export class FunctionNode extends NevaNode {
   public evaluFunction;
   public codeGenTemplate:string;
 
-  constructor(nodeConfig: NodeConfig) {
-    super(nodeConfig);
+  constructor(nodeType: string, nodeManger: NodeManager) {
+    super(nodeType, nodeManger);
+    const nodeConfig = nodeManger.nodeConfigs[nodeType];
     this.evaluFunction = nodeConfig.evaluFunction;
     this.codeGenTemplate = nodeConfig.codeGen;
 

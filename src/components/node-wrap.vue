@@ -14,7 +14,7 @@
 
     <div class="node-title"
     :class="{'canteval-node':!node.canEval}">
-      <span draggable="false">{{node.name}}{{node.id}}</span>
+      <span draggable="false">{{node.name}}</span>
     </div>
     <div class="node-opration">
       <button @mousedown="startdrag">=</button>

@@ -1,6 +1,7 @@
 import { NodeParamDescriptor, NodeParam, NodeConfig, NodeType } from "./node-interface";
 import { NevaNodeGroup } from "./node-group";
 import { generateUUID } from "../util/uuid";
+import { NodeManager } from "@/core/node-manager";
 
 export class NevaNode{
   public id: string;
@@ -11,11 +12,20 @@ export class NevaNode{
   public refedNodes: NevaNode[] = [];
   public preNode: NevaNode;
   protected value: any = null;
-  private config: NodeConfig;
   public belongToGroup: NevaNodeGroup;
+  public manager: NodeManager;
+  public nodeType: string;
 
-  constructor(nodeConfig: NodeConfig) {
-    this.config = nodeConfig;
+  get config(): NodeConfig {
+    return this.manager.nodeConfigs[this.nodeType];
+  }
+
+  constructor(nodeType: string, nodeManger: NodeManager) {
+    this.manager = nodeManger;
+    const nodeConfig = nodeManger.nodeConfigs[nodeType];
+    if (nodeConfig === undefined) {
+      throw `cant create node ${nodeType}`;
+    }
     this.type = nodeConfig.type;
     this.name = nodeConfig.name;
     this.id = generateUUID();
