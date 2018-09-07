@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="tool-bar">
-      <GroupNodeListCom/>
+      <GraphNodeListCom/>
       <div >
         <button
         v-for="config in nodeTypeList" :key="config.name"
@@ -38,7 +38,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import NevaNodeCom from "@/components/node.vue";
 import NevaNodeNumberInputCom from "@/components/node/input/number-input-node.vue";
 import NevaNodeBooleanInputCom from "@/components/node/input/number-input-node.vue";
-import GroupNodeListCom from "@/components/group-node-list.vue";
+import GraphNodeListCom from "@/components/graph-node-list.vue";
 import { ViewFunctionNode } from "../core/view-function-node";
 import { NodeType } from "../core/node-interface";
 import NodeConnector from "@/components/connector.vue";
@@ -48,7 +48,7 @@ import NodeConnector from "@/components/connector.vue";
     NevaNodeCom,
     NevaNodeNumberInputCom,NevaNodeBooleanInputCom,
     NodeConnector,
-    GroupNodeListCom,
+    GraphNodeListCom,
   }
 })
 export default class NevaBoard extends Vue {
@@ -70,7 +70,7 @@ export default class NevaBoard extends Vue {
   }
 
   get inputList(){
-    return this.manager.currentNodeGroup.nodes.filter(n=>{
+    return this.manager.currentNodeGraph.nodes.filter(n=>{
       return n.type === NodeType.inputNode
     })
   }
@@ -86,13 +86,13 @@ export default class NevaBoard extends Vue {
   }
 
   get functionNodeList(){
-    return this.$store.state.nodeManager.currentNodeGroup.nodes.filter(n=>{
+    return this.$store.state.nodeManager.currentNodeGraph.nodes.filter(n=>{
       return n.type !== NodeType.inputNode
     })
   }
 
   exportScene(){
-    
+    console.log(JSON.stringify(this.manager.toJSON()));
   }
 
   addNode(e: MouseEvent){

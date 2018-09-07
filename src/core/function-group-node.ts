@@ -2,7 +2,7 @@ import { NevaNode } from "./node";
 import { NodeConfig } from "./node-interface";
 import { NodeManager } from "@/core/node-manager";
 
-export class FunctionGroupNode extends NevaNode{
+export class FunctionGraphNode extends NevaNode{
   constructor(nodeType: string, nodeManger: NodeManager) {
     super(nodeType, nodeManger);
     // this.evaluFunction = nodeConfig.evaluFunction;

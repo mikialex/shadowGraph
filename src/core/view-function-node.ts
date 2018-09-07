@@ -24,6 +24,15 @@ export class ViewFunctionNode extends FunctionNode{
 
   public connectEmitorX = 100;
   public connectEmitorY = 30;
+
+  public toJSON() {
+    const data = super.toJSON();
+    data.viewData = {
+      positionX: this.positionX,
+      positionY: this.positionY
+    }
+    return data;
+  }
   
 
 }

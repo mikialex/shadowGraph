@@ -13,11 +13,12 @@ export interface NodeParamDescriptor {
 
 export enum NodeType{
   inputNode,
-  groupProxy,
+  graphProxy,
   functionNode,
 }
 
 export interface NodeConfig {
+  isInner: boolean;
   evaluFunction;
   isInputNode: boolean;
   paramsDescriptor: NodeParamDescriptor[];
@@ -27,11 +28,11 @@ export interface NodeConfig {
   defaultValue?: number;
 }
 
-export interface NodeGroupParamDescriptor {
+export interface NodeGraphParamDescriptor {
   name: string;
   mapToNode: NevaNode;
   mapToNodeParamName: string;
 }
 
-export interface NodeGroupConfig {
+export interface NodeGraphConfig {
 }

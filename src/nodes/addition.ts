@@ -1,6 +1,7 @@
 import { NodeType, NodeConfig } from "../core/node-interface";
 
 export const AdditionNodeConfig: NodeConfig = {
+  isInner: true,
   type: NodeType.functionNode,
   name: 'addition',
   evaluFunction: (params: any[]) => {

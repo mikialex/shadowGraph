@@ -1,5 +1,5 @@
 import { NodeParamDescriptor, NodeParam, NodeConfig, NodeType } from "./node-interface";
-import { NevaNodeGroup } from "./node-group";
+import { NevaNodeGraph } from "./node-graph";
 import { generateUUID } from "../util/uuid";
 import { NodeManager } from "@/core/node-manager";
 
@@ -12,12 +12,12 @@ export class NevaNode{
   public refedNodes: NevaNode[] = [];
   public preNode: NevaNode;
   protected value: any = null;
-  public belongToGroup: NevaNodeGroup;
+  public belongToGraph: NevaNodeGraph;
   public manager: NodeManager;
-  public nodeType: string;
+  public nodeDefineType: string;
 
   get config(): NodeConfig {
-    return this.manager.nodeConfigs[this.nodeType];
+    return this.manager.nodeConfigs[this.nodeDefineType];
   }
 
   constructor(nodeType: string, nodeManger: NodeManager) {
@@ -27,6 +27,7 @@ export class NevaNode{
       throw `cant create node ${nodeType}`;
     }
     this.type = nodeConfig.type;
+    this.nodeDefineType = nodeType;
     this.name = nodeConfig.name;
     this.id = generateUUID();
     if (nodeConfig.defaultValue !== undefined) {
@@ -38,8 +39,8 @@ export class NevaNode{
     return this.type === NodeType.inputNode;
   }
 
-  get isProxyGroupNode() {
-    return this.type === NodeType.groupProxy;
+  get isProxyGraphNode() {
+    return this.type === NodeType.graphProxy;
   }
 
   get canEval() {
@@ -115,13 +116,13 @@ export class NevaNode{
     this.removeAllRefed();
   }
 
-  public toJSON() {
+  public toJSON(): any {
     return {
       id: this.id,
       type: this.config.name,
       InputValue: this.isInputNode ? this.value : undefined, 
       refNodes: this.inputParams.map(param => {
-        return param.valueRef.id
+        return param.valueRef?param.valueRef.id:null
       })
     }
   }

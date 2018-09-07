@@ -1,9 +1,9 @@
 <template>
   <div>
-    <span>node group list:</span>
-    <div v-for="nodeGroup in manager.nodeGroupList" 
-      :key="nodeGroup.name">
-      <button>{{nodeGroup.name}}</button>
+    <span>node graph list:</span>
+    <div v-for="nodeGraph in manager.nodeGraphList" 
+      :key="nodeGraph.name">
+      <button>{{nodeGraph.name}}</button>
     </div>
   </div>
 </template>
@@ -16,7 +16,7 @@ import { ViewFunctionNode } from "../core/view-function-node";
   components: {
   }
 })
-export default class GroupNodeListCom extends Vue {
+export default class GraphNodeListCom extends Vue {
   get manager(){
     return this.$store.state.nodeManager
   }

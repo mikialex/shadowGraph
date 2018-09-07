@@ -1,19 +1,19 @@
 import { NevaNode } from "./node";
-import { NodeConfig, NodeGroupConfig, NodeGroupParamDescriptor, NodeType } from "./node-interface";
+import { NodeConfig, NodeGraphConfig, NodeGraphParamDescriptor, NodeType } from "./node-interface";
 import { FunctionNode } from "@/core/function-node";
 
-let globalNodeGroupId = 0;
-export class NevaNodeGroup{
-  constructor(config: NodeGroupConfig) {
+let globalNodeGraphId = 0;
+export class NevaNodeGraph{
+  constructor(config: NodeGraphConfig) {
     this.config = config;
-    this.id = globalNodeGroupId;
-    globalNodeGroupId++;
+    this.id = globalNodeGraphId;
+    globalNodeGraphId++;
   }
 
   id: number;
-  config: NodeGroupConfig;
+  config: NodeGraphConfig;
   nodes: NevaNode[] = [];
-  paramsMap: NodeGroupParamDescriptor[] = [];
+  paramsMap: NodeGraphParamDescriptor[] = [];
   returnNode: NevaNode;
 
   checkIsInNodes(node) {
@@ -23,37 +23,37 @@ export class NevaNodeGroup{
   addNode(node: NevaNode) {
     if (!this.checkIsInNodes(node)) {
       this.nodes.push(node); 
-      node.belongToGroup = this;
+      node.belongToGraph = this;
     }
   }
 
   removeNode(node: NevaNode) {
     let position = this.nodes.indexOf(node);
     if (position === -1) {
-      console.warn('try to remove a node that not exist in nodegroup')
+      console.warn('try to remove a node that not exist in nodegraph')
       return;
     }
     this.nodes.splice(position, 1);
     node.removeAllConnection();
   }
 
-  defineGroupParam(node: NevaNode, paramName: string, groupParamName: string) {
+  defineGraphParam(node: NevaNode, paramName: string, graphParamName: string) {
     // validation
     if (node.type !== NodeType.inputNode) {
-      throw 'groupParm must defined on inputNode';
+      throw 'graphParm must defined on inputNode';
     }
     this.paramsMap.map(outParam => {
       if (outParam.mapToNode.id === node.id
         && outParam.mapToNodeParamName === paramName) {
-        throw 'cant redefine same groupParam';
+        throw 'cant redefine same graphParam';
       }
-      if (outParam.name === groupParamName) {
-        throw 'cant define groupParam with same value';
+      if (outParam.name === graphParamName) {
+        throw 'cant define graphParam with same value';
       }
     })
 
     this.paramsMap.push({
-      name: groupParamName,
+      name: graphParamName,
       mapToNode: node,
       mapToNodeParamName: paramName,
     })
@@ -79,15 +79,16 @@ export class NevaNodeGroup{
       }
     })
     return {
-      nodesInfo, paramsMapInfo,
-      returnNode:this.returnNode.id
+      nodesInfo,
+      paramsMapInfo,
+      returnNode: this.returnNode ? this.returnNode.id : undefined,
     }
   }
 
 }
 
-export class NevaNodeFunctionGroup extends NevaNodeGroup {
-  constructor(config: NodeGroupConfig) {
+export class NevaNodeFunctionGraph extends NevaNodeGraph {
+  constructor(config: NodeGraphConfig) {
     super(config);
   }
   evalQueue: FunctionNode[];

@@ -18,10 +18,10 @@ export default new Vuex.Store({
   },
   mutations: {
     addNode(state, node: ViewFunctionNode) {
-      state.nodeManager.currentNodeGroup.addNode(node);
+      state.nodeManager.currentNodeGraph.addNode(node);
     },
     removeNode(state, node: ViewFunctionNode) {
-      state.nodeManager.currentNodeGroup.removeNode(node);
+      state.nodeManager.currentNodeGraph.removeNode(node);
     },
     setNodeValue(state, payload) {
       payload.node.setValue(payload.value);

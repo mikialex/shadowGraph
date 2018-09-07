@@ -1,4 +1,4 @@
-import { NevaNodeGroup } from "./node-group";
+import { NevaNodeGraph } from "@/core/node-graph";
 import { NodeConfig } from "./node-interface";
 
 import { AdditionNodeConfig } from '../nodes/addition';
@@ -9,18 +9,18 @@ const innerNodeTypes = [AdditionNodeConfig, InputNodeConfig, ConditionNodeConfig
 
 export class NodeManager {
   constructor() {
-    this.mainNodeGroup = new NevaNodeGroup({
+    this.mainNodeGraph = new NevaNodeGraph({
       name: 'main'
     });
-    this.currentNodeGroup = this.mainNodeGroup;
+    this.currentNodeGraph = this.mainNodeGraph;
     innerNodeTypes.forEach(conf => {
       this.registerNodeConfig(conf);
     })
   }
 
-  nodeGroupList: NevaNodeGroup[] = [];
-  mainNodeGroup: NevaNodeGroup;
-  currentNodeGroup: NevaNodeGroup;
+  nodeGraphList: NevaNodeGraph[] = [];
+  mainNodeGraph: NevaNodeGraph;
+  currentNodeGraph: NevaNodeGraph;
 
   nodeConfigs: { [index: string]: NodeConfig } = {};
 
@@ -30,12 +30,23 @@ export class NodeManager {
 
   toJSON() {
     return {
-      main: this.mainNodeGroup.toJSON(),
-      nodeConfigs: this.nodeConfigs,
+      main: this.mainNodeGraph.toJSON(),
+      nodeConfigs: Object.keys(this.nodeConfigs).map(key => this.nodeConfigs[key]).filter(conf => {
+        return conf.isInner !== true;
+      }),
     }
   }
 
-  downLoadAll() {
+  loadData(data: any) {
+    const customConfig = data.nodeConfigs;
+    const mainGraph = data.nodesInfo;
+    customConfig.forEach(conf => {
+      this.registerNodeConfig(conf);
+    });
+
+  }
+
+  downLoadData() {
     
   }
 
