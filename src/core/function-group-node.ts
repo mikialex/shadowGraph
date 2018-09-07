@@ -1,9 +1,10 @@
 import { NevaNode } from "./node";
 import { NodeConfig } from "./node-interface";
+import { NodeManager } from "@/core/node-manager";
 
 export class FunctionGroupNode extends NevaNode{
-  constructor(nodeConfig: NodeConfig) {
-    super(nodeConfig);
+  constructor(nodeType: string, nodeManger: NodeManager) {
+    super(nodeType, nodeManger);
     // this.evaluFunction = nodeConfig.evaluFunction;
 
     // this.inputParams = [];

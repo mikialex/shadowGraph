@@ -30,12 +30,13 @@ export class NodeManager {
 
   toJSON() {
     return {
-
+      main: this.mainNodeGroup.toJSON(),
+      nodeConfigs: this.nodeConfigs,
     }
   }
 
   downLoadAll() {
-
+    
   }
 
 }

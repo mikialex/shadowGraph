@@ -13,6 +13,8 @@
         <button 
         @click="switchCurrentType(null)"
         >normal</button>
+
+        <button @click="exportScene">export</button>
       </div>
     </div>
     <NodeConnector></NodeConnector>
@@ -87,6 +89,10 @@ export default class NevaBoard extends Vue {
     return this.$store.state.nodeManager.currentNodeGroup.nodes.filter(n=>{
       return n.type !== NodeType.inputNode
     })
+  }
+
+  exportScene(){
+    
   }
 
   addNode(e: MouseEvent){

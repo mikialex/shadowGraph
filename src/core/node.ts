@@ -118,7 +118,7 @@ export class NevaNode{
   public toJSON() {
     return {
       id: this.id,
-      config: this.config,
+      type: this.config.name,
       InputValue: this.isInputNode ? this.value : undefined, 
       refNodes: this.inputParams.map(param => {
         return param.valueRef.id
