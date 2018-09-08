@@ -53,6 +53,6 @@ export default class NevaNumberInputNodeCom extends Vue {
 }
 
 input{
-  width:100%;
+  width:calc(100% - 7px);
 }
 </style>

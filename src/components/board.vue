@@ -3,6 +3,7 @@
     <div class="tool-bar">
       <GraphNodeListCom/>
       <div >
+
         <div
         v-for="config in nodeTypeList" :key="config.name"
          @click="switchCurrentType(config)"
@@ -11,26 +12,37 @@
         >
           {{config.name}}
         </div>
+
         <button 
         @click="switchCurrentType(null)"
         >normal</button>
 
-        <button @click="exportScene">export</button>
       </div>
     </div>
     <NodeConnector></NodeConnector>
-    <div class="neva-board" id="board" @mousedown.self="addNode">
+    <div class="neva-board" 
+    id="board" 
+    @mousedown.self="addNode"
+    :style="{cursor:this.$store.state.isConnecting?'crosshair': ''}"
+    >
       <NevaNodeCom v-for="node in functionNodeList" 
       :node="node"
       :boardInfo="boardInfo"
       :key="node.id"></NevaNodeCom>
 
-      <NevaNodeNumberInputCom v-for="node in inputList" 
+      <NevaNodeNumberInputCom v-for="node in numberInputList" 
       :node="node"
       :boardInfo="boardInfo"
       :key="node.id"></NevaNodeNumberInputCom>
 
+      <NevaNodeBooleanInputCom v-for="node in booleanInputList" 
+      :node="node"
+      :boardInfo="boardInfo"
+      :key="node.id"></NevaNodeBooleanInputCom>
+
     </div>
+
+    <button @click="exportScene">export</button>
   </div>
 </template>
 
@@ -38,7 +50,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import NevaNodeCom from "@/components/node.vue";
 import NevaNodeNumberInputCom from "@/components/node/input/number-input-node.vue";
-import NevaNodeBooleanInputCom from "@/components/node/input/number-input-node.vue";
+import NevaNodeBooleanInputCom from "@/components/node/input/boolean-input-node.vue";
 import GraphNodeListCom from "@/components/graph-node-list.vue";
 import { ViewFunctionNode } from "../core/view-function-node";
 import { NodeType } from "../core/node-interface";
@@ -47,7 +59,8 @@ import NodeConnector from "@/components/connector.vue";
 @Component({
   components: {
     NevaNodeCom,
-    NevaNodeNumberInputCom,NevaNodeBooleanInputCom,
+    NevaNodeNumberInputCom,
+    NevaNodeBooleanInputCom,
     NodeConnector,
     GraphNodeListCom,
   }
@@ -78,7 +91,13 @@ export default class NevaBoard extends Vue {
 
   get numberInputList(){
     return this.inputList.filter(n=>{
-      return n.type === NodeType.inputNode
+      return n.name === 'number-input'
+    })
+  }
+
+  get booleanInputList(){
+    return this.inputList.filter(n=>{
+      return n.name === 'boolean-input'
     })
   }
 

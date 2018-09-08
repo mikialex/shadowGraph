@@ -2,10 +2,18 @@ import { NevaNodeGraph } from "@/core/node-graph";
 import { NodeConfig } from "./node-interface";
 
 import { AdditionNodeConfig } from '../nodes/addition';
-import { InputNodeConfig } from '../nodes/input';
+import { SubstractionNodeConfig } from '../nodes/substraction';
+import { NumberInputNodeConfig } from '@/nodes/input-number';
+import { BooleanInputNodeConfig } from '@/nodes/input-boolean';
 import { ConditionNodeConfig } from '../nodes/condition';
 
-const innerNodeTypes = [AdditionNodeConfig, InputNodeConfig, ConditionNodeConfig];
+const innerNodeTypes = [
+  AdditionNodeConfig,
+  SubstractionNodeConfig,
+  NumberInputNodeConfig,
+  BooleanInputNodeConfig,
+  ConditionNodeConfig
+];
 
 export class NodeManager {
   constructor() {

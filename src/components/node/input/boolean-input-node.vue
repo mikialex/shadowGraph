@@ -3,9 +3,10 @@
     :boardInfo="boardInfo"
     :node="node">
     <input 
-    type="checker" 
+    type="checkbox" 
     :disabled="isDisplayMode"
     v-model="value">
+    <span v-if="value">true</span> <span v-if="!value">false</span>
   </NodeUIWrap>
 </template>
 
@@ -35,7 +36,7 @@ export default class NevaNumberInputNodeCom extends Vue {
   set value(val){
     this.$store.commit('setNodeValue', {
       node:this.node,
-      value:!!this.value
+      value:val
     })
     this.node.updateGraphValue();
   }
@@ -45,14 +46,5 @@ export default class NevaNumberInputNodeCom extends Vue {
 </script>
 
 <style scoped lang="scss">
-.neva-node{
-  width:100px;
-  height:50px;
-  border:1px solid #000;
-  position: absolute;
-}
 
-input{
-  width:100%;
-}
 </style>

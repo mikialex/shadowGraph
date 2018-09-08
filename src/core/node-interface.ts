@@ -25,7 +25,7 @@ export interface NodeConfig {
   type: NodeType;
   name: string;
   codeGen: string;
-  defaultValue?: number;
+  defaultValue?: any;
 }
 
 export interface NodeGraphParamDescriptor {

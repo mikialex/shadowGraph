@@ -1,8 +1,8 @@
-import { NodeType, NodeConfig } from "../core/node-interface";
+import { NodeType, NodeConfig } from "@/core/node-interface";
 
-export const InputNodeConfig: NodeConfig = {
+export const NumberInputNodeConfig: NodeConfig = {
   isInner: true,
-  name: 'input',
+  name: 'number-input',
   type: NodeType.inputNode,
   isInputNode: true,
   defaultValue: 0,
