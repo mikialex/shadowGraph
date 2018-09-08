@@ -3,7 +3,7 @@ import { NodeConfig, NodeGraphConfig, NodeGraphParamDescriptor, NodeType } from 
 import { FunctionNode } from "@/core/function-node";
 
 let globalNodeGraphId = 0;
-export class NevaNodeGraph{
+export class NevaNodeGraph {
   constructor(config: NodeGraphConfig) {
     this.config = config;
     this.id = globalNodeGraphId;
@@ -22,7 +22,7 @@ export class NevaNodeGraph{
 
   addNode(node: NevaNode) {
     if (!this.checkIsInNodes(node)) {
-      this.nodes.push(node); 
+      this.nodes.push(node);
       node.belongToGraph = this;
     }
   }
@@ -67,6 +67,10 @@ export class NevaNodeGraph{
     }
   }
 
+  load(data: any) {
+    
+  }
+
   toJSON() {
     const nodesInfo = this.nodes.map(n => {
       return n.toJSON();
@@ -75,7 +79,7 @@ export class NevaNodeGraph{
       return {
         nodeId: p.mapToNode.id,
         paramName: p.mapToNodeParamName,
-        name:p.name,
+        name: p.name,
       }
     })
     return {

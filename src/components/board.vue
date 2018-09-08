@@ -3,13 +3,14 @@
     <div class="tool-bar">
       <GraphNodeListCom/>
       <div >
-        <button
+        <div
         v-for="config in nodeTypeList" :key="config.name"
          @click="switchCurrentType(config)"
+        class="new-node"
         :class="{'current-type':config === currentType}"
         >
           {{config.name}}
-        </button>
+        </div>
         <button 
         @click="switchCurrentType(null)"
         >normal</button>
@@ -112,8 +113,23 @@ export default class NevaBoard extends Vue {
 .neva-board{
   width:600px;
   height:400px;
-  border:1px solid #000;
+  border:1px solid #888;
+  margin:5px;
   position: relative;
+}
+
+.new-node{
+  font-size: 12px;
+  display: inline-block;
+  border:1px solid #eee;
+  padding:3px;
+  cursor: pointer;
+  &:hover{
+    background: #eee;
+  }
+  &:active{
+    background: #ddd;
+  }
 }
 
 .tool-bar{

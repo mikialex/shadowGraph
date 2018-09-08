@@ -1,10 +1,11 @@
 <template>
   <div>
-    <span>node graph list:</span>
-    <div v-for="nodeGraph in manager.nodeGraphList" 
-      :key="nodeGraph.name">
-      <button>{{nodeGraph.name}}</button>
-    </div>
+    <!-- <span>add new node:</span> -->
+    <!-- <div v-for="nodeGraph in manager.nodeGraphList" 
+      :key="nodeGraph.name"
+      class="new-node">
+      {{nodeGraph.name}}
+    </div> -->
   </div>
 </template>
 
@@ -26,10 +27,5 @@ export default class GraphNodeListCom extends Vue {
 </script>
 
 <style scoped lang="scss">
-.neva-node{
-  width:100px;
-  height:50px;
-  border:1px solid #000;
-  position: absolute;
-}
+
 </style>
