@@ -3,7 +3,7 @@ import { NevaNodeGraph } from "./node-graph";
 import { generateUUID } from "../util/uuid";
 import { NodeManager } from "@/core/node-manager";
 
-export class NevaNode{
+export class NevaNode {
   public id: string;
   public name: string;
   public isDirty = false;
@@ -41,6 +41,14 @@ export class NevaNode{
 
   get isInputNode() {
     return this.type === NodeType.inputNode;
+  }
+
+  get isGraphInput() {
+    return this.belongToGraph.checkGetGraphInputNodeName(this)!=='';
+  }
+
+  get graphInputName() {
+    return this.belongToGraph.checkGetGraphInputNodeName(this);
   }
 
   get isProxyGraphNode() {

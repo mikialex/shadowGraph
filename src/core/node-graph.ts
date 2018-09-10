@@ -20,6 +20,16 @@ export class NevaNodeGraph {
     return this.nodes.indexOf(node) !== -1;
   }
 
+  checkGetGraphInputNodeName(node) {
+    let name = '';
+    this.paramsMap.forEach(outParam => {
+      if (outParam.mapToNode.id === node.id) {
+        name = outParam.name 
+      }
+    })
+    return name;
+  }
+
   addNode(node: NevaNode) {
     if (!this.checkIsInNodes(node)) {
       this.nodes.push(node);
@@ -37,25 +47,28 @@ export class NevaNodeGraph {
     node.removeAllConnection();
   }
 
-  defineGraphParam(node: NevaNode, paramName: string, graphParamName: string) {
+  cancelGraphParamDefine(node: NevaNode) {
+    this.paramsMap = this.paramsMap.filter(param => {
+      return param.mapToNode !== node;
+    })
+  }
+
+  defineGraphParam(node: NevaNode, graphParamName: string) {
     // validation
     if (node.type !== NodeType.inputNode) {
       throw 'graphParm must defined on inputNode';
     }
-    this.paramsMap.map(outParam => {
-      if (outParam.mapToNode.id === node.id
-        && outParam.mapToNodeParamName === paramName) {
+    this.paramsMap.forEach(outParam => {
+      if (outParam.mapToNode === node) {
         throw 'cant redefine same graphParam';
       }
       if (outParam.name === graphParamName) {
         throw 'cant define graphParam with same value';
       }
     })
-
     this.paramsMap.push({
       name: graphParamName,
-      mapToNode: node,
-      mapToNodeParamName: paramName,
+      mapToNode: node
     })
   }
 
@@ -78,7 +91,6 @@ export class NevaNodeGraph {
     const paramsMapInfo = this.paramsMap.map(p => {
       return {
         nodeId: p.mapToNode.id,
-        paramName: p.mapToNodeParamName,
         name: p.name,
       }
     })

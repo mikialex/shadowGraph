@@ -5,11 +5,14 @@
     top: viewPositionY,
   }">
 
-  <div v-if="isReturnNode" class="return-flag">RETURN</div>
+  <div v-if="node.isReturnNode" class="return-flag">RETURN</div>
+  <div v-if="node.isGraphInput" class="return-flag">{{node.graphInputName}}</div>
 
     <div class="menu" v-if="hasExpandMenu">
       <button @click ="deleteNode">delete node</button>
       <button @click ="log">code gen</button>
+      <button @click="cancelInputDefine" v-if="node.isGraphInput">cancel input define</button>
+      <button @click="defineAsInputNode" v-if="node.isInputNode && !node.isGraphInput">define as input node</button>
       <button @click="defineAsReturnNode">define as return node</button>
       <button @click="hasExpandMenu = false">close</button>
     </div>
@@ -81,7 +84,12 @@ export default class NodeUIWrap extends Vue {
   }
 
   defineAsInputNode(){
-
+    this.$store.commit("defineGraphInput", {node:this.node, name: 'myname'+ Math.random()});
+    this.hasExpandMenu = false;
+  }
+  cancelInputDefine(){
+    this.$store.commit("cancleGraphInputDefine", this.node);
+    this.hasExpandMenu = false;
   }
 
   defineAsReturnNode(){
@@ -155,11 +163,6 @@ export default class NodeUIWrap extends Vue {
       this.node.pipeFrom(this.$store.state.connectFrom, port);
       this.node.updateGraphValue();
     }
-  }
-
-  get isReturnNode() {
-    console.log(this.node.belongToGraph.returnNode === this.node)
-    return this.node.belongToGraph.returnNode === this.node;
   }
 
   get lines() {

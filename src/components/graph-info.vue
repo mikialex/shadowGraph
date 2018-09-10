@@ -1,7 +1,7 @@
 <template>
   <div>
-
     <button @click="exportScene">export</button>
+    
   </div>
 </template>
 

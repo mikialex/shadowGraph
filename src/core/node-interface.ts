@@ -29,10 +29,11 @@ export interface NodeConfig {
 }
 
 export interface NodeGraphParamDescriptor {
-  name: string;
-  mapToNode: NevaNode;
-  mapToNodeParamName: string;
+  name: string; // node graph parma name
+  mapToNode: NevaNode;  // map to which node in graph
 }
 
 export interface NodeGraphConfig {
+  name: string;
+
 }
