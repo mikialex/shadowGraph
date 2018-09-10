@@ -14,7 +14,7 @@ export class NevaNodeGraph {
   config: NodeGraphConfig;
   nodes: NevaNode[] = [];
   paramsMap: NodeGraphParamDescriptor[] = [];
-  returnNode: NevaNode;
+  returnNode: NevaNode = null;
 
   checkIsInNodes(node) {
     return this.nodes.indexOf(node) !== -1;

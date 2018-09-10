@@ -3,7 +3,7 @@
     <div class="tool-bar">
       <GraphNodeListCom/>
       <div >
-
+        <span>add node:</span>
         <div
         v-for="config in nodeTypeList" :key="config.name"
          @click="switchCurrentType(config)"
@@ -13,9 +13,9 @@
           {{config.name}}
         </div>
 
-        <button 
+        <button v-if="currentType !== null"
         @click="switchCurrentType(null)"
-        >normal</button>
+        >cancel</button>
 
       </div>
     </div>
@@ -42,12 +42,11 @@
 
     </div>
 
-    <button @click="exportScene">export</button>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from "vue-property-decorator";
 import NevaNodeCom from "@/components/node.vue";
 import NevaNodeNumberInputCom from "@/components/node/input/number-input-node.vue";
 import NevaNodeBooleanInputCom from "@/components/node/input/boolean-input-node.vue";
@@ -62,100 +61,96 @@ import NodeConnector from "@/components/connector.vue";
     NevaNodeNumberInputCom,
     NevaNodeBooleanInputCom,
     NodeConnector,
-    GraphNodeListCom,
+    GraphNodeListCom
   }
 })
 export default class NevaBoard extends Vue {
   currentType = null;
-  switchCurrentType(newType){
+  switchCurrentType(newType) {
     this.currentType = newType;
   }
 
   get nodeTypeList() {
-    return Object.keys(this.manager.nodeConfigs).map(key =>
-    this.manager.nodeConfigs[key])
+    return Object.keys(this.manager.nodeConfigs).map(
+      key => this.manager.nodeConfigs[key]
+    );
   }
 
-  get boardInfo(){
+  get boardInfo() {
     return {
-      offsetX: document.querySelector('#board').getBoundingClientRect().left,
-      offsetY: document.querySelector('#board').getBoundingClientRect().top,
-    }
+      offsetX: document.querySelector("#board").getBoundingClientRect().left,
+      offsetY: document.querySelector("#board").getBoundingClientRect().top
+    };
   }
 
-  get inputList(){
-    return this.manager.currentNodeGraph.nodes.filter(n=>{
-      return n.type === NodeType.inputNode
-    })
+  get inputList() {
+    return this.manager.currentNodeGraph.nodes.filter(n => {
+      return n.type === NodeType.inputNode;
+    });
   }
 
-  get numberInputList(){
-    return this.inputList.filter(n=>{
-      return n.name === 'number-input'
-    })
+  get numberInputList() {
+    return this.inputList.filter(n => {
+      return n.name === "number-input";
+    });
   }
 
-  get booleanInputList(){
-    return this.inputList.filter(n=>{
-      return n.name === 'boolean-input'
-    })
+  get booleanInputList() {
+    return this.inputList.filter(n => {
+      return n.name === "boolean-input";
+    });
   }
 
   get manager() {
     return this.$store.state.nodeManager;
   }
 
-  get functionNodeList(){
-    return this.$store.state.nodeManager.currentNodeGraph.nodes.filter(n=>{
-      return n.type !== NodeType.inputNode
-    })
+  get functionNodeList() {
+    return this.$store.state.nodeManager.currentNodeGraph.nodes.filter(n => {
+      return n.type !== NodeType.inputNode;
+    });
   }
 
-  exportScene(){
-    console.log(JSON.stringify(this.manager.toJSON()));
-  }
-
-  addNode(e: MouseEvent){
-    if(this.currentType){
+  addNode(e: MouseEvent) {
+    if (this.currentType) {
       let newNode = new ViewFunctionNode(this.currentType.name, this.manager);
       newNode.positionX = e.clientX;
       newNode.positionY = e.clientY;
-      this.$store.commit('addNode',newNode);
+      this.$store.commit("addNode", newNode);
     }
     this.switchCurrentType(null);
   }
-
 }
 </script>
 
 <style scoped lang="scss">
-.neva-board{
-  width:600px;
-  height:400px;
-  border:1px solid #888;
-  margin:5px;
+.neva-board {
+  width: 600px;
+  height: 400px;
+  border: 1px solid #888;
+  margin: 5px;
   position: relative;
 }
 
-.new-node{
+.new-node {
   font-size: 12px;
   display: inline-block;
-  border:1px solid #eee;
-  padding:3px;
+  border: 1px solid #eee;
+  padding: 3px;
   cursor: pointer;
-  &:hover{
+  &:hover {
     background: #eee;
   }
-  &:active{
+  &:active {
     background: #ddd;
   }
 }
 
-.tool-bar{
+.tool-bar {
   display: flex;
 }
 
-.current-type{
+.current-type {
   background: #88f;
 }
 </style>

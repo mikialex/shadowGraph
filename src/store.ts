@@ -23,6 +23,12 @@ export default new Vuex.Store({
     removeNode(state, node: ViewFunctionNode) {
       state.nodeManager.currentNodeGraph.removeNode(node);
     },
+    defineGraphInput(state, node: ViewFunctionNode) {
+      // state.nodeManager.mainNodeGraph.defineGraphParam(node);
+    },
+    defineGraphReturn(state, node: ViewFunctionNode) {
+      state.nodeManager.mainNodeGraph.defineReturnNode(node);
+    },
     setNodeValue(state, payload) {
       payload.node.setValue(payload.value);
     },

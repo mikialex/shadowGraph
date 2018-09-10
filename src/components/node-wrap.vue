@@ -5,9 +5,12 @@
     top: viewPositionY,
   }">
 
+  <div v-if="isReturnNode" class="return-flag">RETURN</div>
+
     <div class="menu" v-if="hasExpandMenu">
       <button @click ="deleteNode">delete node</button>
       <button @click ="log">code gen</button>
+      <button @click="defineAsReturnNode">define as return node</button>
       <button @click="hasExpandMenu = false">close</button>
     </div>
     <div class="menu-mask" v-if="hasExpandMenu" @click="hasExpandMenu = false"></div>
@@ -77,8 +80,18 @@ export default class NodeUIWrap extends Vue {
     console.log(this.node.codeGen());
   }
 
+  defineAsInputNode(){
+
+  }
+
+  defineAsReturnNode(){
+    this.$store.commit("defineGraphReturn", this.node);
+    this.hasExpandMenu = false;
+  }
+
   deleteNode() {
     this.$store.commit("removeNode", this.node);
+    this.hasExpandMenu = false
   }
 
   removeDependency(input) {
@@ -144,6 +157,11 @@ export default class NodeUIWrap extends Vue {
     }
   }
 
+  get isReturnNode() {
+    console.log(this.node.belongToGraph.returnNode === this.node)
+    return this.node.belongToGraph.returnNode === this.node;
+  }
+
   get lines() {
     return this.node.inputParams
       .filter(para => {
@@ -160,17 +178,6 @@ export default class NodeUIWrap extends Vue {
       });
   }
 
-  // get svgWidth(){
-  //   this.lines.reduce((lineA,lineB))
-  // }
-
-  // get svgHeight(){
-
-  // }
-
-  // get verticleOffset(){
-
-  // }
 }
 </script>
 
@@ -226,14 +233,22 @@ export default class NodeUIWrap extends Vue {
   position: absolute;
   top: 0px;
   right: 0px;
+  background: #fff;
+  box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.123);
+  width:150px;
   > button {
-    width: 80px;
+    display: block;
     height: 20px;
-    background: #fff;
     margin: 0px;
     border: 0px;
-    box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.123);
   }
+}
+
+.return-flag{
+  position: absolute;
+  top:-25px;
+  font-weight: bold;
+  font-size: 20px;
 }
 
 .menu-mask {

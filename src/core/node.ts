@@ -35,6 +35,10 @@ export class NevaNode{
     }
   }
 
+  get isReturnNode() {
+    return this.belongToGraph.returnNode === this;
+  }
+
   get isInputNode() {
     return this.type === NodeType.inputNode;
   }
