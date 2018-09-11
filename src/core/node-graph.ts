@@ -1,16 +1,16 @@
 import { NevaNode } from "./node";
 import { NodeConfig, NodeGraphConfig, NodeGraphParamDescriptor, NodeType } from "./node-interface";
 import { FunctionNode } from "@/core/function-node";
+import { generateUUID } from "@/util/uuid";
 
-let globalNodeGraphId = 0;
 export class NevaNodeGraph {
   constructor(config: NodeGraphConfig) {
     this.config = config;
-    this.id = globalNodeGraphId;
-    globalNodeGraphId++;
+    this.id = generateUUID();
   }
 
-  id: number;
+  name: string = 'default-graph';
+  id: string;
   config: NodeGraphConfig;
   nodes: NevaNode[] = [];
   paramsMap: NodeGraphParamDescriptor[] = [];
@@ -78,6 +78,18 @@ export class NevaNodeGraph {
     } else {
       throw 'cant define a node that not in nodes as return node'
     }
+  }
+
+  codeGen() {
+    if (this.returnNode === null) {
+      throw 'you should define return node to gen a graphs code'
+    }
+    let functionBody = this.returnNode.codeGen();
+    let functionString = 
+    `function(){
+        ${functionBody}
+      }`;
+    return functionString;
   }
 
   load(data: any) {

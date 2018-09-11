@@ -8,26 +8,28 @@ export class NevaNode {
   public name: string;
   public isDirty = false;
   public type: NodeType;
+  public nodeDefineType: string;
+
   public inputParams: NodeParam[];
   public refedNodes: NevaNode[] = [];
-  public preNode: NevaNode;
+
   protected value: any = null;
+
   public belongToGraph: NevaNodeGraph;
   public manager: NodeManager;
-  public nodeDefineType: string;
 
   get config(): NodeConfig {
     return this.manager.nodeConfigs[this.nodeDefineType];
   }
 
-  constructor(nodeType: string, nodeManger: NodeManager) {
+  constructor(nodeDefineType: string, nodeManger: NodeManager) {
     this.manager = nodeManger;
-    const nodeConfig = nodeManger.nodeConfigs[nodeType];
+    const nodeConfig = nodeManger.nodeConfigs[nodeDefineType];
     if (nodeConfig === undefined) {
-      throw `cant create node ${nodeType}`;
+      throw `cant create node ${nodeDefineType}`;
     }
     this.type = nodeConfig.type;
-    this.nodeDefineType = nodeType;
+    this.nodeDefineType = nodeDefineType;
     this.name = nodeConfig.name;
     this.id = generateUUID();
     if (nodeConfig.defaultValue !== undefined) {
@@ -68,7 +70,7 @@ export class NevaNode {
     return isvalid;
   }
 
-  codeGen(): string {
+  codeGen(scope?): string {
     throw 'not implement';
   }
 

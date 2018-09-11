@@ -9,6 +9,8 @@ export interface NodeParam {
 
 export interface NodeParamDescriptor {
   name: string;
+  required?: boolean;
+  default?: any;
 }
 
 export enum NodeType{

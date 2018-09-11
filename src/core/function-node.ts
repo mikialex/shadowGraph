@@ -64,16 +64,26 @@ export class FunctionNode extends NevaNode {
     })
   }
 
-  codeGen(): string {
+  codeGen(scope?): string {
+    if (scope === undefined) {
+      let scope = {};
+    }
+
     let str = this.codeGenTemplate;
     if (this.isInputNode) {
       str = str.replace(`{{p1}}`, this.value.toString());
     } else {
       this.inputParams.forEach((input, index) => {
-        if (this.isInputNode) {
-          str = str.replace(`{{p${index + 1}}}`, this.value);
+        if (input.valueRef.isInputNode) {
+          str = str.replace(`{{p${index + 1}}}`, input.valueRef.getValue());
         } else {
-          str = str.replace(`{{p${index + 1}}}`, input.valueRef.codeGen());
+          let replacer;
+          if (this.config.paramsDescriptor[index].required) {
+            replacer = input.valueRef.codeGen(scope);
+          } else {
+            replacer = this.config.paramsDescriptor[index].default;
+          }
+          str = str.replace(`{{p${index + 1}}}`, replacer);
         }
       })
     }
