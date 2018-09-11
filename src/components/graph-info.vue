@@ -35,7 +35,7 @@ export default class GraphInfo extends Vue {
     return this.graph.returnNode !== null;
   }
   graphCodeGen() {
-    return this.graph.codeGen();
+    console.log(this.graph.codeGen());
   }
 
   exportScene() {

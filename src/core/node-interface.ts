@@ -7,6 +7,20 @@ export interface NodeParam {
   self: NevaNode;
 }
 
+
+export function convertToStandardNodeParamDescriptor(param: NodeParamDescriptor): NodeParamDescriptor {
+  if (param.required === undefined) param.required = true;
+
+  return param;
+}
+
+export function convertToStandardNodeConfig(conf: NodeConfig): NodeConfig {
+  conf.paramsDescriptor.forEach(param => {
+    convertToStandardNodeParamDescriptor(param);
+  })
+  return conf;
+}
+
 export interface NodeParamDescriptor {
   name: string;
   required?: boolean;

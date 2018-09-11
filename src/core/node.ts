@@ -70,7 +70,7 @@ export class NevaNode {
     return isvalid;
   }
 
-  codeGen(scope?): string {
+  codeGen(ctx?): any {
     throw 'not implement';
   }
 
@@ -90,14 +90,16 @@ export class NevaNode {
     this.inputParams.forEach(input => {
       if (input.name === injectSlot) {
         input.valueRef = node;
-        node.refedNodes.push(this);
+        if (!node.refedNodes.includes(this)) {
+          node.refedNodes.push(this);
+        }
       }
     })
   }
 
   private removeRefedNode(node: NevaNode) {
     this.refedNodes.filter(n => {
-      n.id === node.id;
+      n.id !== node.id;
     })
   }
   public removeDependencyByNodeParam(inputPara: NodeParam) {

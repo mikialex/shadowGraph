@@ -1,11 +1,12 @@
 import { NevaNodeGraph } from "@/core/node-graph";
-import { NodeConfig } from "./node-interface";
+import { NodeConfig, convertToStandardNodeConfig } from "./node-interface";
 
 import { AdditionNodeConfig } from '../nodes/addition';
 import { SubstractionNodeConfig } from '../nodes/substraction';
 import { NumberInputNodeConfig } from '@/nodes/input-number';
 import { BooleanInputNodeConfig } from '@/nodes/input-boolean';
 import { ConditionNodeConfig } from '../nodes/condition';
+import { GraphCodeGenerator } from "@/code-gen/code-gen";
 
 const innerNodeTypes = [
   AdditionNodeConfig,
@@ -32,8 +33,10 @@ export class NodeManager {
 
   nodeConfigs: { [index: string]: NodeConfig } = {};
 
+  codeGenerator: GraphCodeGenerator = new GraphCodeGenerator();
+
   registerNodeConfig(conf: NodeConfig) {
-    this.nodeConfigs[conf.name] = conf;
+    this.nodeConfigs[conf.name] = convertToStandardNodeConfig(conf);
   }
 
   toJSON() {
