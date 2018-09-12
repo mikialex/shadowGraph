@@ -13,8 +13,16 @@ export interface CodeGenContext {
 
 export function convertCodeGenContext2Exp(ctx: CodeGenContext): string {
   let str = '';
+  const varList = ctx.varList.slice();
+  const returnVar = varList.shift();
+  varList.forEach(v => {
+    str += `var ${v.varKey} = ${v.exp}`;
+    str += '\n';
+  });
 
-  return ''
+  str += `return  ${returnVar.exp}`;
+  str += '\n';
+  return str
 }
 
 export function convertCodeGenContext2Function(ctx: CodeGenContext): string {
@@ -23,6 +31,7 @@ export function convertCodeGenContext2Function(ctx: CodeGenContext): string {
   return ''
 }
 
+let tempId = 0;
 export function codeGen(ctx: CodeGenContext) {
   const currentVar = ctx.varList[ctx.varList.length - 1];
   const nodeToGen = currentVar.refedNode;
@@ -42,16 +51,20 @@ export function codeGen(ctx: CodeGenContext) {
         replacer = nodeToGen.config.paramsDescriptor[index].default;
       } else {
         let hasGened = false;
+        let oldGenKey;
         for (let i = 0; i < ctx.varList.length; i++) {
-          if (ctx.varList[i].varKey === paramNode.id) {
+          if (ctx.varList[i].refedNode.id === paramNode.id) {
             hasGened = true;
+            oldGenKey = ctx.varList[i].varKey
             break;
           }
         }
         if (!hasGened) {
           const position = ctx.varList.length;
+          tempId++;
+          const newVarKey = 'temp' + tempId;
           const newVar = {
-            varKey: paramNode.id,
+            varKey: newVarKey,
             refedNode: paramNode as FunctionNode,
             exp: ''
           }
@@ -59,15 +72,14 @@ export function codeGen(ctx: CodeGenContext) {
           codeGen(ctx);
 
           if (paramNode.refedNodes.length > 1) {
-            replacer = paramNode.id;
+            replacer = newVarKey;
           } else {
             ctx.varList.splice(position, 1);
             replacer = newVar.exp;
           }
         } else {
-          replacer = paramNode.id;
+          replacer = oldGenKey;
         }
-
 
       }
 
@@ -83,13 +95,13 @@ export class GraphCodeGenerator {
   codeGenFunctionNode(node: FunctionNode): string {
     const ctx = {
       varList: [{
-        varKey: 'returnPoint',
+        varKey: '',
         refedNode: node,
         exp: ''
       }]
     };
     codeGen(ctx);
     console.log(ctx);
-    return convertCodeGenContext2Function(ctx);
+    return convertCodeGenContext2Exp(ctx);
   }
 }
