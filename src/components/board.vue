@@ -2,7 +2,7 @@
   <div>
     <div class="tool-bar">
       <GraphNodeListCom/>
-      <div >
+      <div>
         <span>add node:</span>
         <div
         v-for="config in nodeTypeList" :key="config.name"
@@ -19,28 +19,36 @@
 
       </div>
     </div>
-    <NodeConnector></NodeConnector>
-    <div class="neva-board" 
-    id="board" 
-    @mousedown.self="addNode"
-    :style="{cursor:this.$store.state.isConnecting?'crosshair': ''}"
-    >
-      <NevaNodeCom v-for="node in functionNodeList" 
-      :node="node"
-      :boardInfo="boardInfo"
-      :key="node.id"></NevaNodeCom>
 
-      <NevaNodeNumberInputCom v-for="node in numberInputList" 
-      :node="node"
-      :boardInfo="boardInfo"
-      :key="node.id"></NevaNodeNumberInputCom>
+    <div class="board-wrap">
+      <div class="move-mask" 
+      v-if="isViewChanging"
+      @mousedown="startMove"
+      ></div>
+      <NodeConnector></NodeConnector>
+      <div class="neva-board" 
+      id="board" 
+      @mousedown.self="addNode"
+      :style="{cursor:this.$store.state.isConnecting?'crosshair': ''}"
+      >
+        <NevaNodeCom v-for="node in functionNodeList" 
+        :node="node"
+        :boardInfo="boardInfo"
+        :key="node.id"></NevaNodeCom>
 
-      <NevaNodeBooleanInputCom v-for="node in booleanInputList" 
-      :node="node"
-      :boardInfo="boardInfo"
-      :key="node.id"></NevaNodeBooleanInputCom>
+        <NevaNodeNumberInputCom v-for="node in numberInputList" 
+        :node="node"
+        :boardInfo="boardInfo"
+        :key="node.id"></NevaNodeNumberInputCom>
 
+        <NevaNodeBooleanInputCom v-for="node in booleanInputList" 
+        :node="node"
+        :boardInfo="boardInfo"
+        :key="node.id"></NevaNodeBooleanInputCom>
+
+      </div>
     </div>
+
 
   </div>
 </template>
@@ -81,9 +89,36 @@ export default class NevaBoard extends Vue {
   }
 
   boardInfo = {
-        offsetX: 0,
-        offsetY: 0,
-      }
+    offsetX: 0,
+    offsetY: 0,
+  }
+
+  viewOffsetX = 0;
+  viewOffsetY = 0;
+  viewScale = 1;
+  isViewChanging = false;
+  originX = 0;
+  originY = 0;
+  startX = 0;
+  startY = 0;
+  updateView(e){
+    const deltaX = e.clientX - this.startX;
+    const deltaY = e.clientY - this.startY;
+    this.viewOffsetX = this.originX + deltaX;
+    this.viewOffsetY = this.originY + deltaY;
+  }
+  stopMove(e){
+    window.removeEventListener('mousemove',this.updateView);
+    window.removeEventListener('mouseup', this.stopMove);
+  }
+  startMove(e){
+    this.originX = this.viewOffsetX;
+    this.originY = this.viewOffsetY;
+    this.startX = e.clientX;
+    this.startY = e.clientY;
+    window.addEventListener('mousemove',this.updateView);
+    window.addEventListener('mouseup', this.stopMove);
+  }
 
   updateBoardInfo(){
     if(!document.querySelector("#board")){
@@ -140,12 +175,26 @@ export default class NevaBoard extends Vue {
 </script>
 
 <style scoped lang="scss">
-.neva-board {
+
+.board-wrap{
   width: 600px;
   height: 400px;
+  overflow: hidden;
   border: 1px solid #888;
   margin: 5px;
+}
+
+.neva-board {
+  width: 100%;
+  height: 100%;
   position: relative;
+}
+
+.move-mask{
+  width: 100%;
+  height: 100%;
+  position:absolute;
+  z-index: 999;
 }
 
 .new-node {

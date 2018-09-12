@@ -51,6 +51,11 @@ export class NevaNodeGraph {
     node.removeAllConnection();
   }
 
+  clear() {
+    this.nodes = [];
+    this.returnNode = null;
+  }
+
   cancelGraphParamDefine(node: NevaNode) {
     this.paramsMap = this.paramsMap.filter(param => {
       return param.mapToNode !== node;
