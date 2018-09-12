@@ -8,6 +8,15 @@
   </div>
 </template>
 
+<script>
+export default {
+  mounted(){
+    
+  }
+}
+</script>
+
+
 <style lang="scss">
 body{
   margin:0px;

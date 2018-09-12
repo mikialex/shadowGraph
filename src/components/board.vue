@@ -76,8 +76,24 @@ export default class NevaBoard extends Vue {
     );
   }
 
-  get boardInfo() {
-    return {
+  mounted(){
+    this.updateBoardInfo();
+  }
+
+  boardInfo = {
+        offsetX: 0,
+        offsetY: 0,
+      }
+
+  updateBoardInfo(){
+    if(!document.querySelector("#board")){
+      this.boardInfo = {
+        offsetX: 0,
+        offsetY: 0,
+      }
+      return;
+    } 
+    this.boardInfo =  {
       offsetX: document.querySelector("#board").getBoundingClientRect().left,
       offsetY: document.querySelector("#board").getBoundingClientRect().top
     };

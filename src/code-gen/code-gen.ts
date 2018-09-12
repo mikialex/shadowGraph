@@ -41,15 +41,14 @@ export function codeGen(ctx: CodeGenContext) {
         }
         replacer = nodeToGen.config.paramsDescriptor[index].default;
       } else {
-        if (paramNode.refedNodes.length > 1) {
-          replacer = paramNode.id;
-          ctx.varList.push({
-            varKey: replacer,
-            refedNode: paramNode as FunctionNode,
-            exp: ''
-          });
-          codeGen(ctx);
-        } else {
+        let hasGened = false;
+        for (let i = 0; i < ctx.varList.length; i++) {
+          if (ctx.varList[i].varKey === paramNode.id) {
+            hasGened = true;
+            break;
+          }
+        }
+        if (!hasGened) {
           const position = ctx.varList.length;
           const newVar = {
             varKey: paramNode.id,
@@ -58,9 +57,18 @@ export function codeGen(ctx: CodeGenContext) {
           }
           ctx.varList.push(newVar);
           codeGen(ctx);
-          ctx.varList.splice(position, 1);
-          replacer = newVar.exp;
+
+          if (paramNode.refedNodes.length > 1) {
+            replacer = paramNode.id;
+          } else {
+            ctx.varList.splice(position, 1);
+            replacer = newVar.exp;
+          }
+        } else {
+          replacer = paramNode.id;
         }
+
+
       }
 
       str = str.replace(`{{p${index + 1}}}`, replacer);

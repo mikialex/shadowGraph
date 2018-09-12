@@ -1,0 +1,92 @@
+{
+  "main": {
+    "nodesInfo": [
+      {
+        "id": "568C15FC-F1F1-48B6-8104-FE17E20C5DC1",
+        "type": "addition",
+        "refNodes": [
+          "1288FC70-FE04-4F1A-BC3C-E8786AE8B654",
+          "237C2117-C8A2-41DD-AC5C-B5083C5AC181"
+        ],
+        "viewData": {
+          "positionX": 200,
+          "positionY": 182
+        }
+      },
+      {
+        "id": "1288FC70-FE04-4F1A-BC3C-E8786AE8B654",
+        "type": "number-input",
+        "InputValue": 0,
+        "refNodes": [
+          null
+        ],
+        "viewData": {
+          "positionX": 50,
+          "positionY": 118
+        }
+      },
+      {
+        "id": "237C2117-C8A2-41DD-AC5C-B5083C5AC181",
+        "type": "number-input",
+        "InputValue": 0,
+        "refNodes": [
+          null
+        ],
+        "viewData": {
+          "positionX": 48,
+          "positionY": 214
+        }
+      },
+      {
+        "id": "D9ACCF41-3BA9-4287-93D1-8E48B6A0FEBC",
+        "type": "addition",
+        "refNodes": [
+          "568C15FC-F1F1-48B6-8104-FE17E20C5DC1",
+          "3D50E419-5436-4BCB-A2D1-958DA0324066"
+        ],
+        "viewData": {
+          "positionX": 361,
+          "positionY": 213
+        }
+      },
+      {
+        "id": "3D50E419-5436-4BCB-A2D1-958DA0324066",
+        "type": "number-input",
+        "InputValue": 0,
+        "refNodes": [
+          null
+        ],
+        "viewData": {
+          "positionX": 194,
+          "positionY": 298
+        }
+      },
+      {
+        "id": "C5DE539B-DE02-477B-88AA-DD9B07D6F485",
+        "type": "substraction",
+        "refNodes": [
+          "8B98DD39-ECB8-4967-AC0A-46932AA5CDC3",
+          "568C15FC-F1F1-48B6-8104-FE17E20C5DC1"
+        ],
+        "viewData": {
+          "positionX": 368,
+          "positionY": 95
+        }
+      },
+      {
+        "id": "8B98DD39-ECB8-4967-AC0A-46932AA5CDC3",
+        "type": "number-input",
+        "InputValue": 0,
+        "refNodes": [
+          null
+        ],
+        "viewData": {
+          "positionX": 194,
+          "positionY": 79
+        }
+      }
+    ],
+    "paramsMapInfo": []
+  },
+  "nodeConfigs": []
+}

@@ -2,11 +2,14 @@ import { NevaNode } from "./node";
 import { NodeConfig, NodeGraphConfig, NodeGraphParamDescriptor, NodeType } from "./node-interface";
 import { FunctionNode } from "@/core/function-node";
 import { generateUUID } from "@/util/uuid";
+import { ViewFunctionNode } from "@/core/view-function-node";
+import { NodeManager } from "@/core/node-manager";
 
 export class NevaNodeGraph {
-  constructor(config: NodeGraphConfig) {
+  constructor(config: NodeGraphConfig, manager: NodeManager) {
     this.config = config;
     this.id = generateUUID();
+    this.manager = manager;
   }
 
   name: string = 'default-graph';
@@ -15,6 +18,7 @@ export class NevaNodeGraph {
   nodes: NevaNode[] = [];
   paramsMap: NodeGraphParamDescriptor[] = [];
   returnNode: NevaNode = null;
+  manager: NodeManager;
 
   checkIsInNodes(node) {
     return this.nodes.indexOf(node) !== -1;
@@ -92,7 +96,31 @@ export class NevaNodeGraph {
     return functionString;
   }
 
-  load(data: any) {
+  loadData(data: any) {
+    const nodeMap = {};
+    data.nodesInfo.forEach(info => {
+      const newNode = new ViewFunctionNode(info.type, this.manager);
+      newNode.id = info.id;
+      newNode.positionX = info.viewData.positionX;
+      newNode.positionY = info.viewData.positionY;
+      nodeMap[info.id] = newNode;
+    })
+    const nodeList = [];
+    data.nodesInfo.forEach(info => {
+      const newNode: ViewFunctionNode = nodeMap[info.id];
+      info.refNodes.forEach((rinfo, index) => {
+        const inputNode = nodeMap[rinfo];
+        if (inputNode) {
+          const slot = newNode.inputParams[index].name;
+          newNode.pipeFrom(inputNode, slot);
+        }
+      })
+      nodeList.push(newNode);
+    });
+
+    nodeList.forEach(node => {
+      this.addNode(node);
+    })
     
   }
 
@@ -116,8 +144,8 @@ export class NevaNodeGraph {
 }
 
 export class NevaNodeFunctionGraph extends NevaNodeGraph {
-  constructor(config: NodeGraphConfig) {
-    super(config);
+  constructor(config: NodeGraphConfig, manager: NodeManager) {
+    super(config, manager);
   }
   evalQueue: FunctionNode[];
   private shouldUpdateEvalDependency = false;

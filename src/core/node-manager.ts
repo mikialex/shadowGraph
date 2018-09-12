@@ -7,6 +7,7 @@ import { NumberInputNodeConfig } from '@/nodes/input-number';
 import { BooleanInputNodeConfig } from '@/nodes/input-boolean';
 import { ConditionNodeConfig } from '../nodes/condition';
 import { GraphCodeGenerator } from "@/code-gen/code-gen";
+import testData from "@/data/test-data.json";
 
 const innerNodeTypes = [
   AdditionNodeConfig,
@@ -19,12 +20,13 @@ const innerNodeTypes = [
 export class NodeManager {
   constructor() {
     this.mainNodeGraph = new NevaNodeGraph({
-      name: 'main'
-    });
+      name: 'main',
+    }, this);
     this.currentNodeGraph = this.mainNodeGraph;
     innerNodeTypes.forEach(conf => {
       this.registerNodeConfig(conf);
     })
+    this.loadData(testData);
   }
 
   nodeGraphList: NevaNodeGraph[] = [];
@@ -50,11 +52,11 @@ export class NodeManager {
 
   loadData(data: any) {
     const customConfig = data.nodeConfigs;
-    const mainGraph = data.nodesInfo;
+    const mainGraphData = data.main;
     customConfig.forEach(conf => {
       this.registerNodeConfig(conf);
     });
-
+    this.mainNodeGraph.loadData(mainGraphData);
   }
 
   downLoadData() {
