@@ -1,4 +1,3 @@
-import { NevaNode } from "@/core/node";
 import { FunctionNode } from "@/core/function-node";
 
 export interface CodeGenVarDescriptor {
@@ -20,7 +19,7 @@ export function convertCodeGenContext2Exp(ctx: CodeGenContext): string {
     str += '\n';
   });
 
-  str += `return  ${returnVar.exp}`;
+  str += `return ${returnVar.exp}`;
   str += '\n';
   return str
 }
