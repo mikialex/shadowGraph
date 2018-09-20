@@ -3,27 +3,6 @@ import { builtIn } from "@/parser/bulit-in";
 import { literal } from "@/parser/literal";
 import { operator } from "@/parser/operator";
 
-enum TokenizeMode {
-  NORMAL = 9999,      // <-- never emitted
-  TOKEN = 999,         // <-- never emitted
-  BLOCK_COMMENT,
-  LINE_COMMENT = 1,
-  PREPROCESSOR = 2,
-  OPERATOR = 3,
-  INTEGER = 4,
-  FLOAT = 5,
-  IDENT = 6,
-  BUILTIN = 7,
-  KEYWORD = 8,
-  WHITESPACE = 9,
-  EOF = 10,
-  HEX = 11,
-}
-
-function getTokenType(mode): TokenType {
-  return;
-}
-
 export class GLSLTokenizer {
   constructor() {
     this.builtinsDict = {};
@@ -47,7 +26,7 @@ export class GLSLTokenizer {
   currentIndex: number = 0;
   currentLine: number = 0;
   currentColum: number = 0;
-  currentMode: TokenizeMode;
+  currentMode: TokenType;
   content: string[] = [];
 
   totalCharactorParsed: number = 0;
@@ -59,7 +38,7 @@ export class GLSLTokenizer {
     this.content.push(this.currentCharactor);
   }
 
-  switchMode(mode: TokenizeMode) {
+  switchMode(mode: TokenType) {
     this.currentMode = mode;
   }
 
@@ -85,7 +64,7 @@ export class GLSLTokenizer {
 
   createToken(content: string) {
     this.tokens.push({
-      type: getTokenType(this.currentMode),
+      type: this.currentMode,
       content: content,
       position: this.currentIndex,
       line: this.currentLine,
@@ -97,14 +76,14 @@ export class GLSLTokenizer {
     if (/[^\d\w_]/.test(this.currentCharactor)) {
       var contentstr = this.getContentStr()
       if (this.literalsDict[contentstr]) {
-        this.switchMode(TokenizeMode.KEYWORD)
+        this.switchMode(TokenType.KEYWORD)
       } else if (this.builtinsDict[contentstr]) {
-        this.switchMode(TokenizeMode.BUILTIN)
+        this.switchMode(TokenType.BUILTIN)
       } else {
-        this.switchMode(TokenizeMode.IDENT)
+        this.switchMode(TokenType.IDENT)
       }
       this.createToken(this.getContentStr())
-      this.switchMode(TokenizeMode.NORMAL)
+      this.switchMode(TokenType.NORMAL)
       return
     }
     this.stepForwardWithRecordAndCollect();
@@ -117,7 +96,7 @@ export class GLSLTokenizer {
     // start block comment
     if (this.currentLastCharactor === '/' && this.currentCharactor === '*') {
       this.currentTokenStartIndex = this.totalCharactorParsed + this.currentIndex - 1
-      this.switchMode(TokenizeMode.BLOCK_COMMENT)
+      this.switchMode(TokenType.BLOCK_COMMENT)
       this.recordCurrentCharactor()
       this.read();
       return;
@@ -126,20 +105,20 @@ export class GLSLTokenizer {
     // start line comment
     if (this.currentLastCharactor === '/' && this.currentCharactor === '/') {
       this.currentTokenStartIndex = this.totalCharactorParsed + this.currentIndex - 1
-      this.switchMode(TokenizeMode.LINE_COMMENT)
+      this.switchMode(TokenType.LINE_COMMENT)
       this.recordCurrentCharactor();
       this.read()
       return;
     }
 
     if (this.currentCharactor === '#') {
-      this.switchMode(TokenizeMode.PREPROCESSOR)
+      this.switchMode(TokenType.PREPROCESSOR)
       this.currentTokenStartIndex = this.totalCharactorParsed + this.currentIndex;
       return;
     }
 
     if (/\s/.test(this.currentCharactor)) {
-      this.switchMode(TokenizeMode.WHITESPACE)
+      this.switchMode(TokenType.WHITESPACE)
       this.currentTokenStartIndex = this.totalCharactorParsed + this.currentIndex;
       return;
     }
@@ -149,12 +128,12 @@ export class GLSLTokenizer {
 
     this.currentTokenStartIndex = this.totalCharactorParsed + this.currentIndex;
     if (isnum) {
-      this.switchMode(TokenizeMode.INTEGER)
+      this.switchMode(TokenType.INTEGER)
     } else {
       if (isoperator) {
-        this.switchMode(TokenizeMode.OPERATOR)
+        this.switchMode(TokenType.OPERATOR)
       } else {
-        this.switchMode(TokenizeMode.TOKEN)
+        this.switchMode(TokenType.TOKEN)
       }
     }
     return;
@@ -165,7 +144,7 @@ export class GLSLTokenizer {
   private lexPreprocessor() {
     if ((this.currentCharactor === '\r' || this.currentCharactor === '\n') && this.currentLastCharactor !== '\\') {
       this.createToken(this.getContentStr())
-      this.switchMode(TokenizeMode.NORMAL)
+      this.switchMode(TokenType.NORMAL)
       return
     }
     this.stepForwardWithRecordAndCollect();
@@ -176,7 +155,7 @@ export class GLSLTokenizer {
     // as same as lexPreprocessor
     if ((this.currentCharactor === '\r' || this.currentCharactor === '\n') && this.currentLastCharactor !== '\\') {
       this.createToken(this.getContentStr())
-      this.switchMode(TokenizeMode.NORMAL)
+      this.switchMode(TokenType.NORMAL)
       return
     }
     this.stepForwardWithRecordAndCollect();
@@ -187,7 +166,7 @@ export class GLSLTokenizer {
     if (this.currentCharactor === '/' && this.currentLastCharactor === '*') {
       this.collectCurrentCharactor()
       this.createToken(this.getContentStr())
-      this.switchMode(TokenizeMode.NORMAL)
+      this.switchMode(TokenType.NORMAL)
       this.read();
       return;
     }
@@ -200,31 +179,31 @@ export class GLSLTokenizer {
 
   private lexOperator() {
     if (this.currentLastCharactor === '.' && /\d/.test(this.currentCharactor)) {
-      this.switchMode(TokenizeMode.FLOAT)
+      this.switchMode(TokenType.FLOAT)
       return
     }
 
     if (this.currentLastCharactor === '/' && this.currentCharactor === '*') {
-      this.switchMode(TokenizeMode.BLOCK_COMMENT)
+      this.switchMode(TokenType.BLOCK_COMMENT)
       return
     }
 
     if (this.currentLastCharactor === '/' && this.currentCharactor === '/') {
-      this.switchMode(TokenizeMode.LINE_COMMENT)
+      this.switchMode(TokenType.LINE_COMMENT)
       return
     }
 
     if (this.currentCharactor === '.' && this.content.length) {
       while (this.determineOperator(this.content));
 
-      this.switchMode(TokenizeMode.FLOAT)
+      this.switchMode(TokenType.FLOAT)
       return
     }
 
     if (this.currentCharactor === ';' || this.currentCharactor === ')' || this.currentCharactor === '(') {
       if (this.content.length) while (this.determineOperator(this.content));
       this.createToken(this.currentCharactor)
-      this.switchMode(TokenizeMode.NORMAL)
+      this.switchMode(TokenType.NORMAL)
       this.read();
       return;
     }
@@ -232,7 +211,7 @@ export class GLSLTokenizer {
     var is_composite_operator = this.content.length === 2 && this.currentCharactor !== '='
     if (/[\w_\d\s]/.test(this.currentCharactor) || is_composite_operator) {
       while (this.determineOperator(this.content));
-      this.switchMode(TokenizeMode.NORMAL)
+      this.switchMode(TokenType.NORMAL)
       return
     }
 
@@ -265,7 +244,7 @@ export class GLSLTokenizer {
   private lexHex() {
     if (/[^a-fA-F0-9]/.test(this.currentCharactor)) {
       this.createToken(this.getContentStr())
-      this.switchMode(TokenizeMode.NORMAL)
+      this.switchMode(TokenType.NORMAL)
       return
     }
 
@@ -275,26 +254,26 @@ export class GLSLTokenizer {
 
   private lexInteger() {
     if (this.currentCharactor === '.') {
-      this.switchMode(TokenizeMode.FLOAT)
+      this.switchMode(TokenType.FLOAT)
       this.stepForwardWithRecordAndCollect();
       return;
     }
 
     if (/[eE]/.test(this.currentCharactor)) {
-      this.switchMode(TokenizeMode.FLOAT)
+      this.switchMode(TokenType.FLOAT)
       this.stepForwardWithRecordAndCollect();
       return;
     }
 
     if (this.currentCharactor === 'x' && this.content.length === 1 && this.content[0] === '0') {
-      this.switchMode(TokenizeMode.HEX)
+      this.switchMode(TokenType.HEX)
       this.stepForwardWithRecordAndCollect();
       return;
     }
 
     if (/[^\d]/.test(this.currentCharactor)) {
       this.createToken(this.getContentStr())
-      this.switchMode(TokenizeMode.NORMAL)
+      this.switchMode(TokenType.NORMAL)
       return
     }
 
@@ -321,7 +300,7 @@ export class GLSLTokenizer {
 
     if (/[^\d]/.test(this.currentCharactor)) {
       this.createToken(this.getContentStr())
-      this.switchMode(TokenizeMode.NORMAL)
+      this.switchMode(TokenType.NORMAL)
       return
     }
 
@@ -332,7 +311,7 @@ export class GLSLTokenizer {
   private lexWhitespace(): number {
     if (/[^\s]/g.test(this.currentCharactor)) { // new space with a new line start /or space end
       this.createToken(this.getContentStr())
-      this.switchMode(TokenizeMode.NORMAL)
+      this.switchMode(TokenType.NORMAL)
       return;
     }
     this.stepForwardWithRecordAndCollect();
@@ -349,16 +328,16 @@ export class GLSLTokenizer {
       last = this.currentIndex;
 
       switch (this.currentMode) {
-        case TokenizeMode.BLOCK_COMMENT: this.lexBlockComment(); break
-        case TokenizeMode.LINE_COMMENT: this.lexLineComment(); break
-        case TokenizeMode.PREPROCESSOR: this.lexPreprocessor(); break
-        case TokenizeMode.OPERATOR: this.lexOperator(); break
-        case TokenizeMode.INTEGER: this.lexInteger(); break
-        case TokenizeMode.HEX: this.lexHex(); break
-        case TokenizeMode.FLOAT: this.lexDecimal(); break
-        case TokenizeMode.TOKEN: this.lexToken(); break
-        case TokenizeMode.WHITESPACE: this.lexWhitespace(); break
-        case TokenizeMode.NORMAL: this.parseNormal(); break
+        case TokenType.BLOCK_COMMENT: this.lexBlockComment(); break
+        case TokenType.LINE_COMMENT: this.lexLineComment(); break
+        case TokenType.PREPROCESSOR: this.lexPreprocessor(); break
+        case TokenType.OPERATOR: this.lexOperator(); break
+        case TokenType.INTEGER: this.lexInteger(); break
+        case TokenType.HEX: this.lexHex(); break
+        case TokenType.FLOAT: this.lexDecimal(); break
+        case TokenType.TOKEN: this.lexToken(); break
+        case TokenType.WHITESPACE: this.lexWhitespace(); break
+        case TokenType.NORMAL: this.parseNormal(); break
       }
 
       // update token Position
