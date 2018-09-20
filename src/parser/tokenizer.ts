@@ -1,6 +1,7 @@
 import { Token, TokenType } from "@/parser/token";
 import { builtIn } from "@/parser/bulit-in";
 import { literal } from "@/parser/literal";
+import { operator } from "@/parser/operator";
 
 enum TokenizeMode {
   NORMAL = 9999,      // <-- never emitted
@@ -32,11 +33,13 @@ export class GLSLTokenizer {
     })
     literal.forEach(item => {
       this.literalsDict[item] = true
-    })
+    });
+    this.operators = operator;
   }
 
   builtinsDict: { [index: string]: boolean }; 
   literalsDict: { [index: string]: boolean }; 
+  operators;
 
   currentCharactor: string = '';
   currentLastCharactor: string = '';
@@ -58,6 +61,11 @@ export class GLSLTokenizer {
 
   switchMode(mode: TokenizeMode) {
     this.currentMode = mode;
+  }
+
+  read() {
+    this.currentIndex++;
+    return ;
   }
 
 
@@ -83,11 +91,12 @@ export class GLSLTokenizer {
       }
       this.createToken(this.content.join(''))
       this.switchMode(TokenizeMode.NORMAL)
-      return this.currentIndex
+      return 
     }
     this.collectCurrentCharactor()
     this.currentLastCharactor = this.currentCharactor
-    return this.currentIndex + 1
+    this.read();
+    return;
   }
 
   parseNormal() {
@@ -98,7 +107,8 @@ export class GLSLTokenizer {
       this.currentTokenStartIndex = this.totalCharactorParsed + this.currentIndex - 1
       this.switchMode(TokenizeMode.BLOCK_COMMENT)
       this.currentLastCharactor = this.currentCharactor
-      return this.currentIndex + 1
+      this.read();
+      return;
     }
 
     // start line comment
@@ -106,19 +116,19 @@ export class GLSLTokenizer {
       this.currentTokenStartIndex = this.totalCharactorParsed + this.currentIndex - 1
       this.switchMode(TokenizeMode.LINE_COMMENT)
       this.currentLastCharactor = this.currentCharactor
-      return this.currentIndex + 1;
+      return this.read();;
     }
 
     if (this.currentCharactor === '#') {
       this.switchMode(TokenizeMode.PREPROCESSOR)
       this.currentTokenStartIndex = this.totalCharactorParsed + this.currentIndex;
-      return this.currentIndex;
+      return ;
     }
 
     if (/\s/.test(this.currentCharactor)) {
       this.switchMode(TokenizeMode.WHITESPACE)
       this.currentTokenStartIndex = this.totalCharactorParsed + this.currentIndex;
-      return this.currentIndex;
+      return ;
     }
 
     const isnum = /\d/.test(this.currentCharactor)
@@ -134,7 +144,7 @@ export class GLSLTokenizer {
         this.switchMode(TokenizeMode.TOKEN)
       }
     }
-    return this.currentIndex;
+    return ;
   }
 
 
@@ -143,11 +153,12 @@ export class GLSLTokenizer {
     if((this.currentCharactor === '\r' || this.currentCharactor === '\n') && this.currentLastCharactor !== '\\') {
       this.createToken(this.content.join(''))
       this.switchMode(TokenizeMode.NORMAL)
-      return this.currentIndex
+      return 
     }
     this.collectCurrentCharactor()
     this.currentLastCharactor = this.currentCharactor
-    return this.currentIndex + 1
+    this.read();
+    return;
   }
 
   private line_comment() {
@@ -155,11 +166,12 @@ export class GLSLTokenizer {
      if((this.currentCharactor === '\r' || this.currentCharactor === '\n') && this.currentLastCharactor !== '\\') {
       this.createToken(this.content.join(''))
       this.switchMode(TokenizeMode.NORMAL)
-      return this.currentIndex
+      return 
     }
     this.collectCurrentCharactor()
     this.currentLastCharactor = this.currentCharactor
-    return this.currentIndex + 1
+    this.read();
+    return;
   }
 
   private block_comment() {
@@ -167,54 +179,58 @@ export class GLSLTokenizer {
       this.collectCurrentCharactor()
       this.createToken(this.content.join(''))
       this.switchMode(TokenizeMode.NORMAL)
-      return this.currentIndex + 1
+      this.read();
+      return;
     }
 
     this.collectCurrentCharactor()
     this.currentLastCharactor = this.currentCharactor
-    return this.currentIndex + 1
+    this.read();
+    return;
   }
 
   private operator() {
     if(this.currentLastCharactor === '.' && /\d/.test(this.currentCharactor)) {
       this.switchMode(TokenizeMode.FLOAT)
-      return this.currentIndex
+      return 
     }
 
     if(this.currentLastCharactor === '/' && this.currentCharactor === '*') {
       this.switchMode(TokenizeMode.BLOCK_COMMENT)
-      return this.currentIndex
+      return 
     }
 
     if(this.currentLastCharactor === '/' && this.currentCharactor === '/') {
       this.switchMode(TokenizeMode.LINE_COMMENT)
-      return this.currentIndex
+      return 
     }
 
     if(this.currentCharactor === '.' && this.content.length) {
       while(this.determine_operator(this.content));
 
       this.switchMode(TokenizeMode.FLOAT)
-      return this.currentIndex
+      return 
     }
 
     if(this.currentCharactor === ';' || this.currentCharactor === ')' || this.currentCharactor === '(') {
       if(this.content.length) while(this.determine_operator(this.content));
       this.createToken(this.currentCharactor)
       this.switchMode(TokenizeMode.NORMAL)
-      return this.currentIndex + 1
+      this.read();
+      return;
     }
 
     var is_composite_operator = this.content.length === 2 && this.currentCharactor !== '='
     if(/[\w_\d\s]/.test(this.currentCharactor) || is_composite_operator) {
       while(this.determine_operator(this.content));
       this.switchMode(TokenizeMode.NORMAL)
-      return this.currentIndex
+      return 
     }
 
     this.collectCurrentCharactor()
     this.currentLastCharactor = this.currentCharactor
-    return this.currentIndex + 1
+    this.read();
+    return;
   }
 
   private determine_operator(buf) {
@@ -223,8 +239,8 @@ export class GLSLTokenizer {
       , res
 
     do {
-      idx = operators.indexOf(buf.slice(0, buf.length + j).join(''))
-      res = operators[idx]
+      idx = this.operators.indexOf(buf.slice(0, buf.length + j).join(''))
+      res = this.operators[idx]
 
       if(idx === -1) {
         if(j-- + buf.length > 0) continue
@@ -233,7 +249,7 @@ export class GLSLTokenizer {
 
       this.createToken(res)
 
-      start += res.length
+      this.currentTokenStartIndex  += res.length
       this.content = this.content.slice(res.length)
       return this.content.length
     } while(1)
@@ -243,12 +259,13 @@ export class GLSLTokenizer {
     if(/[^a-fA-F0-9]/.test(this.currentCharactor)) {
       this.createToken(this.content.join(''))
       this.switchMode(TokenizeMode.NORMAL)
-      return this.currentIndex
+      return 
     }
 
     this.collectCurrentCharactor()
     this.currentLastCharactor = this.currentCharactor
-    return this.currentIndex + 1
+    this.read();
+    return;
   }
 
   private integer() {
@@ -256,32 +273,36 @@ export class GLSLTokenizer {
       this.collectCurrentCharactor()
       this.switchMode(TokenizeMode.FLOAT)
       this.currentLastCharactor = this.currentCharactor
-      return this.currentIndex + 1
+      this.read();
+      return;
     }
 
     if(/[eE]/.test(this.currentCharactor)) {
       this.collectCurrentCharactor()
       this.switchMode(TokenizeMode.FLOAT)
       this.currentLastCharactor = this.currentCharactor
-      return this.currentIndex + 1
+      this.read();
+      return;
     }
 
     if(this.currentCharactor === 'x' && this.content.length === 1 && this.content[0] === '0') {
       this.switchMode(TokenizeMode.HEX)
       this.collectCurrentCharactor()
       this.currentLastCharactor = this.currentCharactor
-      return this.currentIndex + 1
+      this.read();
+      return;
     }
 
     if(/[^\d]/.test(this.currentCharactor)) {
       this.createToken(this.content.join(''))
       this.switchMode(TokenizeMode.NORMAL)
-      return this.currentIndex
+      return 
     }
 
     this.collectCurrentCharactor()
     this.currentLastCharactor = this.currentCharactor
-    return this.currentIndex + 1
+    this.read();
+    return;
   }
 
   private decimal() {
@@ -294,40 +315,39 @@ export class GLSLTokenizer {
     if(/[eE]/.test(this.currentCharactor)) {
       this.collectCurrentCharactor()
       this.currentLastCharactor = this.currentCharactor
-      return this.currentIndex + 1
+      this.read();
+      return;
     }
 
     if (this.currentCharactor === '-' && /[eE]/.test(this.currentLastCharactor)) {
       this.collectCurrentCharactor()
       this.currentLastCharactor = this.currentCharactor
-      return this.currentIndex + 1
+      this.read();
+      return;
     }
 
     if(/[^\d]/.test(this.currentCharactor)) {
       this.createToken(this.content.join(''))
       this.switchMode(TokenizeMode.NORMAL)
-      return this.currentIndex
+      return 
     }
 
     this.collectCurrentCharactor()
     this.currentLastCharactor = this.currentCharactor
-    return this.currentIndex + 1
+    this.read();
+    return;
   }
-
-
-
-
-
 
   private parseWhitespace(): number {
     if (/[^\s]/g.test(this.currentCharactor)) { // new space with a new line start /or space end
       this.createToken(this.content.join(''))
       this.switchMode(TokenizeMode.NORMAL)
-      return this.currentIndex;
+      return ;
     }
     this.collectCurrentCharactor();
     this.currentLastCharactor = this.currentCharactor;
-    return this.currentIndex + 1;
+    this.read();
+    return;
   }
 
   public tokenize(inputStr: string) {
@@ -347,9 +367,9 @@ export class GLSLTokenizer {
         // case TokenizeMode.INTEGER: this.currentIndex = this.integer(); break
         // case TokenizeMode.HEX: this.currentIndex = this.hex(); break
         // case TokenizeMode.FLOAT: this.currentIndex = this.decimal(); break
-        case TokenizeMode.TOKEN: this.currentIndex = this.parseToken(); break
-        case TokenizeMode.WHITESPACE: this.currentIndex = this.parseWhitespace(); break
-        case TokenizeMode.NORMAL: this.currentIndex = this.parseNormal(); break
+        case TokenizeMode.TOKEN: this.parseToken(); break
+        case TokenizeMode.WHITESPACE: this.parseWhitespace(); break
+        case TokenizeMode.NORMAL: this.parseNormal(); break
       }
 
       // update token Position
