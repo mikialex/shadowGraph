@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/" tag="div" class="navitem">index</router-link>
+      <router-link to="/graph" tag="div" class="navitem">graph editor</router-link>
+      <router-link to="/parser" tag="div" class="navitem">parser test</router-link>
       <router-link to="/about" tag="div" class="navitem">info</router-link>
     </div>
     <router-view/>

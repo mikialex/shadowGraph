@@ -1,18 +1,18 @@
-export enum TokenType {
+export const enum TokenType {
   NORMAL = 9999,      // <-- never emitted
   TOKEN = 999,         // <-- never emitted
-  BLOCK_COMMENT,
-  LINE_COMMENT = 1,
-  PREPROCESSOR = 2,
-  OPERATOR = 3,
-  INTEGER = 4,
-  FLOAT = 5,
-  IDENT = 6,
-  BUILTIN = 7,
-  KEYWORD = 8,
-  WHITESPACE = 9,
+  BLOCK_COMMENT= 'block comment',
+  LINE_COMMENT = 'line comment',
+  PREPROCESSOR = 'preporcessor',
+  OPERATOR = 'operator',
+  INTEGER = 'integer',
+  FLOAT = 'float',
+  IDENT = 'ident',
+  BUILTIN = 'inner func',
+  KEYWORD = 'keyworld',
+  WHITESPACE = 'space',
   EOF = 10,
-  HEX = 11,
+  HEX = 'hex number',
 }
 
 export interface Token{

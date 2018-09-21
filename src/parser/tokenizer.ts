@@ -111,6 +111,7 @@ export class GLSLTokenizer {
       return;
     }
 
+    // start a prepocessor
     if (this.currentCharactor === '#') {
       this.switchMode(TokenType.PREPROCESSOR)
       this.currentTokenStartIndex = this.totalCharactorParsed + this.currentIndex;
@@ -357,6 +358,22 @@ export class GLSLTokenizer {
     this.totalCharactorParsed += this.currentIndex;
     inputStr = inputStr.slice(this.currentIndex);
     return this.tokens;
+  }
+
+  public reset() {
+    this.currentCharactor= '';
+    this.currentLastCharactor = '';
+    this.currentTokenStartIndex = 0;
+    this.currentIndex = 0;
+    this.currentLine = 0;
+    this.currentColum = 0;
+    this.currentMode = TokenType.NORMAL;
+    this.content = [];
+
+    this.totalCharactorParsed = 0;
+
+    this.input = '';
+    this.tokens = [];
   }
 
 
