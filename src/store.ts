@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { ViewFunctionNode } from '@/core/view-function-node';
+import { ViewGraphNode } from '@/core/view-graph-node';
 import { NodeType } from '@/core/node-interface';
 import { NodeManager } from '@/core/node-manager';
 
@@ -17,20 +17,20 @@ export default new Vuex.Store({
     connectFrom: null,
   },
   mutations: {
-    addNode(state, node: ViewFunctionNode) {
+    addNode(state, node: ViewGraphNode) {
       state.nodeManager.currentNodeGraph.addNode(node);
     },
-    removeNode(state, node: ViewFunctionNode) {
+    removeNode(state, node: ViewGraphNode) {
       state.nodeManager.currentNodeGraph.removeNode(node);
     },
     defineGraphInput(state, payload) {
       const { node, name } = payload;
       state.nodeManager.mainNodeGraph.defineGraphParam(node, name);
     },
-    cancleGraphInputDefine(state, node: ViewFunctionNode) {
+    cancleGraphInputDefine(state, node: ViewGraphNode) {
       state.nodeManager.mainNodeGraph.cancelGraphParamDefine(node);
     },
-    defineGraphReturn(state, node: ViewFunctionNode) {
+    defineGraphReturn(state, node: ViewGraphNode) {
       state.nodeManager.mainNodeGraph.defineReturnNode(node);
     },
     setNodeValue(state, payload) {

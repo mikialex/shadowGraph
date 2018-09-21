@@ -1,12 +1,11 @@
-import { NevaNode } from "./node";
+import { BaseNode } from "./node";
 
 export interface NodeParam { 
   name: string;
-  valueRef: NevaNode;
+  valueRef: BaseNode | null;
   validation: boolean;
-  self: NevaNode;
+  self: BaseNode;
 }
-
 
 export function convertToStandardNodeParamDescriptor(param: NodeParamDescriptor): NodeParamDescriptor {
   if (param.required === undefined) param.required = true;
@@ -30,7 +29,7 @@ export interface NodeParamDescriptor {
 export enum NodeType{
   inputNode,
   graphProxy,
-  functionNode,
+  GraphNode,
 }
 
 export interface NodeConfig {
@@ -46,7 +45,7 @@ export interface NodeConfig {
 
 export interface NodeGraphParamDescriptor {
   name: string; // node graph parma name
-  mapToNode: NevaNode;  // map to which node in graph
+  mapToNode: BaseNode;  // map to which node in graph
 }
 
 export interface NodeGraphConfig {

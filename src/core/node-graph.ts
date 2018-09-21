@@ -1,11 +1,10 @@
-import { NevaNode } from "./node";
-import { NodeConfig, NodeGraphConfig, NodeGraphParamDescriptor, NodeType } from "./node-interface";
-import { FunctionNode } from "@/core/function-node";
+import { NodeGraphConfig, NodeGraphParamDescriptor, NodeType } from "./node-interface";
+import { GraphNode } from "@/core/graph-node";
 import { generateUUID } from "@/util/uuid";
-import { ViewFunctionNode } from "@/core/view-function-node";
+import { ViewGraphNode } from "@/core/view-graph-node";
 import { NodeManager } from "@/core/node-manager";
 
-export class NevaNodeGraph {
+export class NodeGraph {
   constructor(config: NodeGraphConfig, manager: NodeManager) {
     this.config = config;
     this.id = generateUUID();
@@ -15,9 +14,9 @@ export class NevaNodeGraph {
   name: string = 'default-graph';
   id: string;
   config: NodeGraphConfig;
-  nodes: NevaNode[] = [];
+  nodes: GraphNode[] = [];
   paramsMap: NodeGraphParamDescriptor[] = [];
-  returnNode: NevaNode = null;
+  returnNode: GraphNode | null = null;
   manager: NodeManager;
 
   checkIsInNodes(node) {
@@ -34,14 +33,14 @@ export class NevaNodeGraph {
     return name;
   }
 
-  addNode(node: NevaNode) {
+  addNode(node: GraphNode) {
     if (!this.checkIsInNodes(node)) {
       this.nodes.push(node);
       node.belongToGraph = this;
     }
   }
 
-  removeNode(node: NevaNode) {
+  removeNode(node: GraphNode) {
     let position = this.nodes.indexOf(node);
     if (position === -1) {
       console.warn('try to remove a node that not exist in nodegraph')
@@ -56,13 +55,13 @@ export class NevaNodeGraph {
     this.returnNode = null;
   }
 
-  cancelGraphParamDefine(node: NevaNode) {
+  cancelGraphParamDefine(node: GraphNode) {
     this.paramsMap = this.paramsMap.filter(param => {
       return param.mapToNode !== node;
     })
   }
 
-  defineGraphParam(node: NevaNode, graphParamName: string) {
+  defineGraphParam(node: GraphNode, graphParamName: string) {
     // validation
     if (node.type !== NodeType.inputNode) {
       throw 'graphParm must defined on inputNode';
@@ -81,11 +80,87 @@ export class NevaNodeGraph {
     })
   }
 
-  defineReturnNode(node: NevaNode) {
+  defineReturnNode(node: GraphNode) {
     if (this.checkIsInNodes(node)) {
       this.returnNode = node;
     } else {
       throw 'cant define a node that not in nodes as return node'
+    }
+  }
+
+  private evalQueue: GraphNode[] = [];
+  private shouldUpdateEvalDependency = false;
+
+  get cashadowl() {
+    return true;
+  }
+
+  public eval() {
+    if (!this.returnNode) {
+      throw 'graph hasnt return node';
+    }
+    if (this.shouldUpdateEvalDependency) {
+      this.updateEvalDependency()
+    }
+    this.evalQueue.forEach(node => {
+      node.eval();
+    })
+    return this.returnNode.getValue();
+  }
+
+  private updateEvalDependency() {
+    this.evalQueue = [];
+
+    // get input Nodes
+    const paramNodes: GraphNode[] = [];
+    this.paramsMap.forEach(m => {
+      let found = false;
+      paramNodes.forEach(n => {
+        if (m.mapToNode.id === n.id) {
+          found = true;
+        }
+      })
+      if (found === false) {
+        paramNodes.push(m.mapToNode as GraphNode)
+      }
+    })
+
+    this.evalQueue = this.evalQueue.concat(paramNodes);
+
+    let dirtyNodes: GraphNode[] = [];
+    function markDirty(node: GraphNode) {
+      if (node.cashadowl && !node.isDirty) {
+        dirtyNodes.push(node);
+        node.isDirty = true;
+        node.refedNodes.forEach(n => {
+          markDirty(n as GraphNode);
+        })
+      }
+    }
+    paramNodes.forEach(n => { markDirty(n) });
+
+    function checkCanUpdate(node: GraphNode) {
+      let can = true;
+      node.inputParams.forEach(n => {
+        if (n.valueRef && n.valueRef.isDirty) {
+          can = false;
+        }
+      })
+      return can;
+    }
+
+    // TODO need test list optimize here
+    while (dirtyNodes.length !== 0) {
+      dirtyNodes = dirtyNodes.filter((n: GraphNode) => {
+        const checkSafeInputNode = n.isInputNode && !n.inputParams[0].valueRef;
+        if (checkSafeInputNode || checkCanUpdate(n)) {
+          n.isDirty = false;
+          this.evalQueue.push(n);
+          return false;
+        } else {
+          return true;
+        }
+      })
     }
   }
 
@@ -104,15 +179,15 @@ export class NevaNodeGraph {
   loadData(data: any) {
     const nodeMap = {};
     data.nodesInfo.forEach(info => {
-      const newNode = new ViewFunctionNode(info.type, this.manager);
+      const newNode = new ViewGraphNode(info.type, this.manager);
       newNode.id = info.id;
       newNode.positionX = info.viewData.positionX;
       newNode.positionY = info.viewData.positionY;
       nodeMap[info.id] = newNode;
     })
-    const nodeList = [];
+    const nodeList: GraphNode[] = [];
     data.nodesInfo.forEach(info => {
-      const newNode: ViewFunctionNode = nodeMap[info.id];
+      const newNode: ViewGraphNode = nodeMap[info.id];
       info.refNodes.forEach((rinfo, index) => {
         const inputNode = nodeMap[rinfo];
         if (inputNode) {
@@ -143,85 +218,6 @@ export class NevaNodeGraph {
       nodesInfo,
       paramsMapInfo,
       returnNode: this.returnNode ? this.returnNode.id : undefined,
-    }
-  }
-
-}
-
-export class NevaNodeFunctionGraph extends NevaNodeGraph {
-  constructor(config: NodeGraphConfig, manager: NodeManager) {
-    super(config, manager);
-  }
-  evalQueue: FunctionNode[];
-  private shouldUpdateEvalDependency = false;
-
-  get canEval() {
-    return true;
-  }
-
-  public eval() {
-    if (this.shouldUpdateEvalDependency) {
-      this.updateEvalDependency()
-    }
-    this.evalQueue.forEach(node => {
-      node.eval();
-    })
-    return this.returnNode.getValue();
-  }
-
-  private updateEvalDependency() {
-    this.evalQueue = [];
-
-    // get input Nodes
-    const paramNodes = [];
-    this.paramsMap.forEach(m => {
-      let found = false;
-      paramNodes.forEach(n => {
-        if (m.mapToNode.id === n.id) {
-          found = true;
-        }
-      })
-      if (found === false) {
-        paramNodes.push(m.mapToNode)
-      }
-    })
-
-    this.evalQueue = this.evalQueue.concat(paramNodes);
-
-    let dirtyNodes = [];
-    function markDirty(node: NevaNode) {
-      if (node.canEval && !node.isDirty) {
-        dirtyNodes.push(node);
-        node.isDirty = true;
-        node.refedNodes.forEach(n => {
-          markDirty(n);
-        })
-      }
-    }
-    paramNodes.forEach(n => { markDirty(n) });
-
-    function checkCanUpdate(node: NevaNode) {
-      let can = true;
-      node.inputParams.forEach(n => {
-        if (n.valueRef.isDirty) {
-          can = false;
-        }
-      })
-      return can;
-    }
-
-    // TODO need test list optimize here
-    while (dirtyNodes.length !== 0) {
-      dirtyNodes = dirtyNodes.filter((n: FunctionNode) => {
-        const checkSafeInputNode = n.isInputNode && !n.inputParams[0].valueRef;
-        if (checkSafeInputNode || checkCanUpdate(n)) {
-          n.isDirty = false;
-          this.evalQueue.push(n);
-          return false;
-        } else {
-          return true;
-        }
-      })
     }
   }
 

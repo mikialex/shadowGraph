@@ -1,6 +1,6 @@
 <template>
   <div>
-    <canvas class="neva-canvas"></canvas>
+    <canvas class="shadow-canvas"></canvas>
   </div>
 </template>
 
@@ -16,7 +16,7 @@ export default class ResultCanvas extends Vue {
 </script>
 
 <style scoped lang="scss">
-.neva-canvas{
+.shadow-canvas{
   width:300px;
   height:200px;
   border:solid 1px #000;

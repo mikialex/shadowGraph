@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { ViewFunctionNode } from "../core/view-function-node";
+import { ViewGraphNode } from "../core/view-graph-node";
 
 @Component({
   components: {

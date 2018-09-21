@@ -1,8 +1,7 @@
-import { NevaNode } from "./node";
-import { NodeConfig } from "./node-interface";
+import { BaseNode } from "./node";
 import { NodeManager } from "@/core/node-manager";
 
-export class FunctionNode extends NevaNode {
+export class GraphNode extends BaseNode {
   public evaluFunction;
   public codeGenTemplate:string;
 
@@ -24,31 +23,31 @@ export class FunctionNode extends NevaNode {
   }
 
   public updateGraphValue() {
-    const evalQueue = [];
+    const evalQueue: GraphNode[] = [];
 
-    let dirtyNodes = [];
-    function markDirty(node: NevaNode) {
-      if (node.canEval && !node.isDirty) {
+    let dirtyNodes: GraphNode[] = [];
+    function markDirty(node: GraphNode) {
+      if (node.cashadowl && !node.isDirty) {
         dirtyNodes.push(node);
         node.isDirty = true;
         node.refedNodes.forEach(n => {
-          markDirty(n);
+          markDirty(n as GraphNode);
         })
       }
     }
     markDirty(this);
 
-    function checkCanUpdate(node: NevaNode) {
+    function checkCanUpdate(node: GraphNode) {
       let can = true;
       node.inputParams.forEach(n => {
-        if (n.valueRef.isDirty) {
+        if (n.valueRef && n.valueRef.isDirty) {
           can = false;
         }
       })
       return can;
     }
     while (dirtyNodes.length !== 0) {
-      dirtyNodes = dirtyNodes.filter((n: NevaNode) => {
+      dirtyNodes = dirtyNodes.filter((n: GraphNode) => {
         const checkSafeInputNode = n.isInputNode && !n.inputParams[0].valueRef;
         if (checkSafeInputNode || checkCanUpdate(n)) {
           n.isDirty = false;
@@ -65,17 +64,21 @@ export class FunctionNode extends NevaNode {
   }
 
   codeGen(): string {
-    return this.manager.codeGenerator.codeGenFunctionNode(this);
+    return this.manager.codeGenerator.codeGenGraphNode(this);
   }
 
   eval() {
     if (this.isInputNode) {
-      if (this.inputParams[0].valueRef) {
-        this.value = this.inputParams[0].valueRef.getValue();
+      const input = this.inputParams[0].valueRef;
+      if (input) {
+        this.value = input.getValue();
       }
     } else { // normal functional node
-      const params = [];
+      const params: GraphNode[] = [];
       this.inputParams.forEach(input => {
+        if (!input.valueRef) {
+          throw 'cant eval on a not fulfilled node'
+        }
         params.push(input.valueRef.getValue());
       })
       this.value = this.evaluFunction(params);

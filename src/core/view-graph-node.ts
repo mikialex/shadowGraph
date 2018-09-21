@@ -1,7 +1,13 @@
-import { FunctionNode } from "@/core/function-node";
+import { GraphNode } from "@/core/graph-node";
 import { NodeManager } from "@/core/node-manager";
 
-export class ViewFunctionNode extends FunctionNode{
+export interface ViewGraphNodeInputPosition{
+  name: string,
+  reciverX: number,
+  reciverY: number,
+}
+
+export class ViewGraphNode extends GraphNode{
   constructor(nodeType: string, nodeManger: NodeManager) {
     super(nodeType, nodeManger);
     const nodeConfig = nodeManger.nodeConfigs[nodeType];
@@ -14,7 +20,7 @@ export class ViewFunctionNode extends FunctionNode{
     });
   }
 
-  public inputsPositions = [];
+  public inputsPositions: ViewGraphNodeInputPosition[] = [];
 
   public positionX = 0;
   public positionY = 0;

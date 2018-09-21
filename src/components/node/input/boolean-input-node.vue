@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { ViewFunctionNode } from "@/core/view-function-node";
+import { ViewGraphNode } from "@/core/view-graph-node";
 import NodeUIWrap from '@/components/node-wrap.vue';
 
 @Component({
@@ -20,9 +20,9 @@ import NodeUIWrap from '@/components/node-wrap.vue';
     NodeUIWrap,
   }
 })
-export default class NevaNumberInputNodeCom extends Vue {
+export default class shadowNumberInputNodeCom extends Vue {
 
-  @Prop() node: ViewFunctionNode
+  @Prop() node: ViewGraphNode
   @Prop() boardInfo;
 
   get isDisplayMode(){

@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { ViewFunctionNode } from "../core/view-function-node";
+import { ViewGraphNode } from "../core/view-graph-node";
 import NodeUIWrap from './node-wrap.vue';
 
 @Component({
@@ -16,9 +16,9 @@ import NodeUIWrap from './node-wrap.vue';
     NodeUIWrap,
   }
 })
-export default class NevaNodeCom extends Vue {
+export default class BaseNodeCom extends Vue {
 
-  @Prop() node: ViewFunctionNode
+  @Prop() node: ViewGraphNode
   @Prop() boardInfo;
 
 }
@@ -26,7 +26,7 @@ export default class NevaNodeCom extends Vue {
 </script>
 
 <style scoped lang="scss">
-.neva-node{
+.shadow-node{
   width:100px;
   height:50px;
   border:1px solid #000;

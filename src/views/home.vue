@@ -1,20 +1,20 @@
 <template>
   <div class="home">
-    <NevaBoardCom/>
+    <shadowBoardCom/>
     <GraphInfo/>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import NevaBoardCom from "@/components/board.vue"; // @ is an alias to /src
+import shadowBoardCom from "@/components/board.vue"; // @ is an alias to /src
 import GraphInfo from '@/components/graph-info.vue';
-import { NevaNode } from "../core/node";
-import { FunctionNode } from "../core/function-node";
+import { BaseNode } from "../core/node";
+import { GraphNode } from "../core/graph-node";
 
 @Component({
   components: {
-    NevaBoardCom, GraphInfo
+    shadowBoardCom, GraphInfo
   }
 })
 export default class Home extends Vue {

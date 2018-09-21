@@ -1,21 +1,21 @@
-import { NodeParamDescriptor, NodeParam, NodeConfig, NodeType } from "./node-interface";
-import { NevaNodeGraph } from "./node-graph";
+import { NodeParam, NodeConfig, NodeType } from "./node-interface";
+import { NodeGraph } from "./node-graph";
 import { generateUUID } from "../util/uuid";
 import { NodeManager } from "@/core/node-manager";
 
-export class NevaNode {
+export class BaseNode {
   public id: string;
   public name: string;
   public isDirty = false;
   public type: NodeType;
   public nodeDefineType: string;
 
-  public inputParams: NodeParam[];
-  public refedNodes: NevaNode[] = [];
+  public inputParams: NodeParam[] = [];
+  public refedNodes: BaseNode[] = [];
 
   protected value: any = null;
 
-  public belongToGraph: NevaNodeGraph;
+  public belongToGraph: NodeGraph;
   public manager: NodeManager;
 
   get config(): NodeConfig {
@@ -57,7 +57,7 @@ export class NevaNode {
     return this.type === NodeType.graphProxy;
   }
 
-  get canEval() {
+  get cashadowl() {
     if (this.isInputNode) {
       return true;
     }
@@ -82,11 +82,11 @@ export class NevaNode {
     this.value = val;
   }
 
-  public checkIfCanEvaluate() {
-    throw 'checkIfCanEvaluate not imple'
+  public checkIfCashadowluate() {
+    throw 'checkIfCashadowluate not imple'
   }
 
-  public pipeFrom(node: NevaNode, injectSlot: string) {
+  public pipeFrom(node: BaseNode, injectSlot: string) {
     this.inputParams.forEach(input => {
       if (input.name === injectSlot) {
         input.valueRef = node;
@@ -97,7 +97,7 @@ export class NevaNode {
     })
   }
 
-  private removeRefedNode(node: NevaNode) {
+  private removeRefedNode(node: BaseNode) {
     this.refedNodes.filter(n => {
       n.id !== node.id;
     })

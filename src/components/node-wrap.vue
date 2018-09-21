@@ -1,5 +1,5 @@
 <template>
-  <div class="neva-node-wrap"
+  <div class="shadow-node-wrap"
   :style="{
     left: viewPositionX,
     top: viewPositionY,
@@ -20,7 +20,7 @@
 
     <div class="node-title" @mousedown="startdrag"
       :style="{cursor: this.isDraging? 'grabbing': ''}"
-    :class="{'canteval-node':!node.canEval}">
+    :class="{'canteval-node':!node.cashadowl}">
       <span>{{node.name}}</span>
     </div>
 
@@ -58,11 +58,11 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { createSVGConnectionLine } from "../util/line";
-import { ViewFunctionNode } from "../core/view-function-node";
+import { ViewGraphNode } from "../core/view-graph-node";
 
 @Component
 export default class NodeUIWrap extends Vue {
-  @Prop() node: ViewFunctionNode;
+  @Prop() node: ViewGraphNode;
   @Prop() boardInfo;
   @Prop({
     default: true,
@@ -171,7 +171,7 @@ export default class NodeUIWrap extends Vue {
         return para.valueRef !== null;
       })
       .map(para => {
-        const nodeBefore = para.valueRef as ViewFunctionNode;
+        const nodeBefore = para.valueRef as ViewGraphNode;
         return createSVGConnectionLine(
           nodeBefore.positionX + nodeBefore.connectEmitorX,
           nodeBefore.positionY + nodeBefore.connectEmitorY,
@@ -185,7 +185,7 @@ export default class NodeUIWrap extends Vue {
 </script>
 
 <style scoped lang="scss">
-.neva-node-wrap {
+.shadow-node-wrap {
   width: 100px;
   min-height: 50px;
   border: 1px solid #999;

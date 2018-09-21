@@ -1,4 +1,4 @@
-import { NevaNodeGraph } from "@/core/node-graph";
+import { NodeGraph } from "@/core/node-graph";
 import { NodeConfig, convertToStandardNodeConfig } from "./node-interface";
 
 import { AdditionNodeConfig } from '../nodes/addition';
@@ -19,7 +19,7 @@ const innerNodeTypes = [
 
 export class NodeManager {
   constructor() {
-    this.mainNodeGraph = new NevaNodeGraph({
+    this.mainNodeGraph = new NodeGraph({
       name: 'main',
     }, this);
     this.currentNodeGraph = this.mainNodeGraph;
@@ -29,9 +29,9 @@ export class NodeManager {
     this.loadData(testData);
   }
 
-  nodeGraphList: NevaNodeGraph[] = [];
-  mainNodeGraph: NevaNodeGraph;
-  currentNodeGraph: NevaNodeGraph;
+  nodeGraphList: NodeGraph[] = [];
+  mainNodeGraph: NodeGraph;
+  currentNodeGraph: NodeGraph;
 
   nodeConfigs: { [index: string]: NodeConfig } = {};
 

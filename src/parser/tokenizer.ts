@@ -26,13 +26,13 @@ export class GLSLTokenizer {
   currentIndex: number = 0;
   currentLine: number = 0;
   currentColum: number = 0;
-  currentMode: TokenType;
+  currentMode: TokenType = TokenType.NORMAL;
   content: string[] = [];
 
   totalCharactorParsed: number = 0;
 
-  input: string;
-  tokens: Token[];
+  input: string = '';
+  tokens: Token[] = [];
 
   collectCurrentCharactor() {
     this.content.push(this.currentCharactor);
@@ -308,7 +308,7 @@ export class GLSLTokenizer {
     return;
   }
 
-  private lexWhitespace(): number {
+  private lexWhitespace() {
     if (/[^\s]/g.test(this.currentCharactor)) { // new space with a new line start /or space end
       this.createToken(this.getContentStr())
       this.switchMode(TokenType.NORMAL)

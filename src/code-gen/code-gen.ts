@@ -1,8 +1,8 @@
-import { FunctionNode } from "@/core/function-node";
+import { GraphNode } from "@/core/graph-node";
 
 export interface CodeGenVarDescriptor {
   varKey: string;
-  refedNode: FunctionNode;
+  refedNode: GraphNode;
   exp: string;
 }
 
@@ -64,7 +64,7 @@ export function codeGen(ctx: CodeGenContext) {
           const newVarKey = 'temp' + tempId;
           const newVar = {
             varKey: newVarKey,
-            refedNode: paramNode as FunctionNode,
+            refedNode: paramNode as GraphNode,
             exp: ''
           }
           ctx.varList.push(newVar);
@@ -91,7 +91,7 @@ export function codeGen(ctx: CodeGenContext) {
 }
 
 export class GraphCodeGenerator {
-  codeGenFunctionNode(node: FunctionNode): string {
+  codeGenGraphNode(node: GraphNode): string {
     const ctx = {
       varList: [{
         varKey: '',

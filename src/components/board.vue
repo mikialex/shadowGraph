@@ -26,25 +26,25 @@
       @mousedown="startMove"
       ></div>
       <NodeConnector></NodeConnector>
-      <div class="neva-board" 
+      <div class="shadow-board" 
       id="board" 
       @mousedown.self="addNode"
       :style="{cursor:this.$store.state.isConnecting?'crosshair': ''}"
       >
-        <NevaNodeCom v-for="node in functionNodeList" 
+        <BaseNodeCom v-for="node in GraphNodeList" 
         :node="node"
         :boardInfo="boardInfo"
-        :key="node.id"></NevaNodeCom>
+        :key="node.id"></BaseNodeCom>
 
-        <NevaNodeNumberInputCom v-for="node in numberInputList" 
+        <BaseNodeNumberInputCom v-for="node in numberInputList" 
         :node="node"
         :boardInfo="boardInfo"
-        :key="node.id"></NevaNodeNumberInputCom>
+        :key="node.id"></BaseNodeNumberInputCom>
 
-        <NevaNodeBooleanInputCom v-for="node in booleanInputList" 
+        <BaseNodeBooleanInputCom v-for="node in booleanInputList" 
         :node="node"
         :boardInfo="boardInfo"
-        :key="node.id"></NevaNodeBooleanInputCom>
+        :key="node.id"></BaseNodeBooleanInputCom>
 
       </div>
     </div>
@@ -55,24 +55,24 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import NevaNodeCom from "@/components/node.vue";
-import NevaNodeNumberInputCom from "@/components/node/input/number-input-node.vue";
-import NevaNodeBooleanInputCom from "@/components/node/input/boolean-input-node.vue";
+import BaseNodeCom from "@/components/node.vue";
+import BaseNodeNumberInputCom from "@/components/node/input/number-input-node.vue";
+import BaseNodeBooleanInputCom from "@/components/node/input/boolean-input-node.vue";
 import GraphNodeListCom from "@/components/graph-node-list.vue";
-import { ViewFunctionNode } from "../core/view-function-node";
+import { ViewGraphNode } from "../core/view-graph-node";
 import { NodeType } from "../core/node-interface";
 import NodeConnector from "@/components/connector.vue";
 
 @Component({
   components: {
-    NevaNodeCom,
-    NevaNodeNumberInputCom,
-    NevaNodeBooleanInputCom,
+    BaseNodeCom,
+    BaseNodeNumberInputCom,
+    BaseNodeBooleanInputCom,
     NodeConnector,
     GraphNodeListCom
   }
 })
-export default class NevaBoard extends Vue {
+export default class shadowBoard extends Vue {
   currentType = null;
   switchCurrentType(newType) {
     this.currentType = newType;
@@ -121,16 +121,18 @@ export default class NevaBoard extends Vue {
   }
 
   updateBoardInfo(){
-    if(!document.querySelector("#board")){
+    const board = document.querySelector("#board");
+    if(!board){
       this.boardInfo = {
         offsetX: 0,
         offsetY: 0,
       }
       return;
     } 
+    const bounding = board.getBoundingClientRect();
     this.boardInfo =  {
-      offsetX: document.querySelector("#board").getBoundingClientRect().left,
-      offsetY: document.querySelector("#board").getBoundingClientRect().top
+      offsetX: bounding.left,
+      offsetY: bounding.top
     };
   }
 
@@ -156,7 +158,7 @@ export default class NevaBoard extends Vue {
     return this.$store.state.nodeManager;
   }
 
-  get functionNodeList() {
+  get GraphNodeList() {
     return this.$store.state.nodeManager.currentNodeGraph.nodes.filter(n => {
       return n.type !== NodeType.inputNode;
     });
@@ -164,7 +166,7 @@ export default class NevaBoard extends Vue {
 
   addNode(e: MouseEvent) {
     if (this.currentType) {
-      let newNode = new ViewFunctionNode(this.currentType.name, this.manager);
+      let newNode = new ViewGraphNode(this.currentType.name, this.manager);
       newNode.positionX = e.clientX;
       newNode.positionY = e.clientY;
       this.$store.commit("addNode", newNode);
@@ -184,7 +186,7 @@ export default class NevaBoard extends Vue {
   margin: 5px;
 }
 
-.neva-board {
+.shadow-board {
   width: 100%;
   height: 100%;
   position: relative;

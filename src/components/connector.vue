@@ -21,7 +21,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { createSVGConnectionLine } from '../util/line';
-import { ViewFunctionNode } from '../core/view-function-node';
+import { ViewGraphNode } from '../core/view-graph-node';
 
 @Component
 export default class NodeConnector extends Vue {
@@ -43,7 +43,7 @@ export default class NodeConnector extends Vue {
       return para.valueRef !== null;
     })
     .map(para=>{
-      const nodeBefore = para.valueRef as ViewFunctionNode;
+      const nodeBefore = para.valueRef as ViewGraphNode;
       let paraIndex;
       for (let i = 0; i < para.self.inputParams.length; i++) {
         const p = para.self.inputParams[i];
