@@ -24,8 +24,8 @@ export default new Vuex.Store({
       state.nodeManager.currentNodeGraph.removeNode(node);
     },
     defineGraphInput(state, payload) {
-      const { node, name } = payload;
-      state.nodeManager.mainNodeGraph.defineGraphParam(node, name);
+      const { node } = payload;
+      state.nodeManager.mainNodeGraph.defineGraphParam(node);
     },
     cancleGraphInputDefine(state, node: ViewGraphNode) {
       state.nodeManager.mainNodeGraph.cancelGraphParamDefine(node);

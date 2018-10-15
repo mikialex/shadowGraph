@@ -1,4 +1,7 @@
 import { GraphNode } from "@/core/graph-node";
+import { getIndent } from './util/indent';
+import { NodeGraph } from '@/core/node-graph';
+import { convertToValidName } from './util/convert';
 
 export interface CodeGenVarDescriptor {
   varKey: string;
@@ -15,29 +18,47 @@ export function convertCodeGenContext2Exp(ctx: CodeGenContext): string {
   const varList = ctx.varList.slice();
   const returnVar = varList.shift();
   varList.forEach(v => {
-    str += `var ${v.varKey} = ${v.exp}`;
+    str += `${getIndent(1)}var ${v.varKey} = ${v.exp};`;
     str += '\n';
   });
 
-  str += `return ${returnVar.exp}`;
-  str += '\n';
+  str += `${getIndent(1)}return ${returnVar.exp}`;
   return str
 }
 
-export function convertCodeGenContext2Function(ctx: CodeGenContext): string {
+export function codeGenFunctionParamStrFromNodeGraph(graph: NodeGraph): string {
   let str = '';
+  graph.paramsMap.forEach((para, index) => {
+    str += para.name;
+    if (index + 1 !== graph.paramsMap.length) {
+      str += ', ';
+    }
+  })
+  return str;
+}
 
-  return ''
+export function codeGenFunctionFromNodeGraph(graph: NodeGraph): string {
+  let functionBody = graph.returnNode.codeGen();
+  let functionString = 
+`function ${convertToValidName(graph.name)}(${codeGenFunctionParamStrFromNodeGraph(graph)}){
+${functionBody}
+}`;
+  return functionString;
 }
 
 let tempId = 0;
 export function codeGen(ctx: CodeGenContext) {
+  tempId = 0;
   const currentVar = ctx.varList[ctx.varList.length - 1];
   const nodeToGen = currentVar.refedNode;
 
   let str = nodeToGen.codeGenTemplate;
   if (nodeToGen.isInputNode) {
-    str = str.replace(`{{p1}}`, nodeToGen.getValue().toString());
+    if (nodeToGen.isGraphInput) {
+      str = str.replace(`{{p1}}`, nodeToGen.nameAsGraphInput);
+    } else {
+      str = str.replace(`{{p1}}`, nodeToGen.getValue().toString());
+    }
   } else {
     nodeToGen.inputParams.forEach((input, index) => {
       const paramNode = input.valueRef;

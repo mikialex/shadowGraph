@@ -3,6 +3,7 @@ import { GraphNode } from "@/core/graph-node";
 import { generateUUID } from "@/util/uuid";
 import { ViewGraphNode } from "@/core/view-graph-node";
 import { NodeManager } from "@/core/node-manager";
+import { codeGenFunctionFromNodeGraph } from '@/code-gen/code-gen';
 
 export class NodeGraph {
   constructor(config: NodeGraphConfig, manager: NodeManager) {
@@ -61,7 +62,7 @@ export class NodeGraph {
     })
   }
 
-  defineGraphParam(node: GraphNode, graphParamName: string) {
+  defineGraphParam(node: GraphNode) {
     // validation
     if (node.type !== NodeType.inputNode) {
       throw 'graphParm must defined on inputNode';
@@ -70,12 +71,9 @@ export class NodeGraph {
       if (outParam.mapToNode === node) {
         throw 'cant redefine same graphParam';
       }
-      if (outParam.name === graphParamName) {
-        throw 'cant define graphParam with same value';
-      }
     })
     this.paramsMap.push({
-      name: graphParamName,
+      name: 'input' + this.paramsMap.length,
       mapToNode: node
     })
   }
@@ -164,16 +162,11 @@ export class NodeGraph {
     }
   }
 
-  codeGen() {
+  codeGen():string {
     if (this.returnNode === null) {
       throw 'you should define return node to gen a graphs code'
     }
-    let functionBody = this.returnNode.codeGen();
-    let functionString = 
-    `function(){
-        ${functionBody}
-      }`;
-    return functionString;
+    return codeGenFunctionFromNodeGraph(this);
   }
 
   loadData(data: any) {

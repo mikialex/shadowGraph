@@ -84,7 +84,7 @@ export default class NodeUIWrap extends Vue {
   }
 
   defineAsInputNode(){
-    this.$store.commit("defineGraphInput", {node:this.node, name: 'myname'+ Math.random()});
+    this.$store.commit("defineGraphInput", {node:this.node});
     this.hasExpandMenu = false;
   }
   cancelInputDefine(){

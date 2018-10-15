@@ -38,7 +38,7 @@ export class BaseNode {
   }
 
   get isReturnNode() {
-    return this.belongToGraph.returnNode === this;
+    return this.belongToGraph.returnNode && this.belongToGraph.returnNode.id === this.id;
   }
 
   get isInputNode() {
@@ -46,7 +46,11 @@ export class BaseNode {
   }
 
   get isGraphInput() {
-    return this.belongToGraph.checkGetGraphInputNodeName(this)!=='';
+    return this.nameAsGraphInput !== '';
+  }
+
+  get nameAsGraphInput() {
+    return this.belongToGraph.checkGetGraphInputNodeName(this)
   }
 
   get graphInputName() {

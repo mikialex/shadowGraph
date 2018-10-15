@@ -3,7 +3,7 @@ import { NodeManager } from "@/core/node-manager";
 
 export class GraphNode extends BaseNode {
   public evaluFunction;
-  public codeGenTemplate:string;
+  public codeGenTemplate: string;
 
   constructor(nodeType: string, nodeManger: NodeManager) {
     super(nodeType, nodeManger);
