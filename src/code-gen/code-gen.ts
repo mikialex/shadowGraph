@@ -15,8 +15,8 @@ export interface CodeGenContext {
 
 export function convertCodeGenContext2Exp(ctx: CodeGenContext): string {
   let str = '';
-  const varList = ctx.varList.slice();
-  const returnVar = varList.shift();
+  const varList = ctx.varList.slice().reverse();
+  const returnVar = varList.pop();
   varList.forEach(v => {
     str += `${getIndent(1)}var ${v.varKey} = ${v.exp};`;
     str += '\n';
@@ -48,7 +48,6 @@ ${functionBody}
 
 let tempId = 0;
 export function codeGen(ctx: CodeGenContext) {
-  tempId = 0;
   const currentVar = ctx.varList[ctx.varList.length - 1];
   const nodeToGen = currentVar.refedNode;
 
@@ -79,7 +78,7 @@ export function codeGen(ctx: CodeGenContext) {
             break;
           }
         }
-        if (!hasGened) {
+        if (!hasGened && !paramNode.isInputNode) {
           const position = ctx.varList.length;
           tempId++;
           const newVarKey = 'temp' + tempId;
@@ -98,7 +97,15 @@ export function codeGen(ctx: CodeGenContext) {
             replacer = newVar.exp;
           }
         } else {
-          replacer = oldGenKey;
+          if (paramNode.isInputNode) {
+            if (paramNode.isGraphInput) {
+              replacer = paramNode.nameAsGraphInput;
+            } else {
+              replacer = paramNode.getValue().toString();
+            }
+          } else {
+            replacer = oldGenKey;
+          }
         }
 
       }
