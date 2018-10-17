@@ -1,7 +1,7 @@
 import { NodeType, NodeConfig } from "@/core/node-interface";
 
 export const NumberInputNodeConfig: NodeConfig = {
-  isInner: true,
+  isBuiltIn: true,
   name: 'number-input',
   type: NodeType.inputNode,
   isInputNode: true,

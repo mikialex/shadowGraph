@@ -1,7 +1,7 @@
 import { NodeType, NodeConfig } from "@/core/node-interface";
 
 export const ReceiverNodeConfig: NodeConfig = {
-  isInner: true,
+  isBuiltIn: true,
   name: 'input',
   type: NodeType.inputNode,
   isInputNode: true,

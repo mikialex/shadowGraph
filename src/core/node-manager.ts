@@ -45,7 +45,7 @@ export class NodeManager {
     return {
       main: this.mainNodeGraph.toJSON(),
       nodeConfigs: Object.keys(this.nodeConfigs).map(key => this.nodeConfigs[key]).filter(conf => {
-        return conf.isInner !== true;
+        return conf.isBuiltIn !== true;
       }),
     }
   }

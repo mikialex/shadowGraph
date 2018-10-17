@@ -1,7 +1,7 @@
 import { NodeType, NodeConfig } from "../core/node-interface";
 
 export const ConditionNodeConfig: NodeConfig = {
-  isInner: true,
+  isBuiltIn: true,
   name: 'condition',
   type: NodeType.GraphNode,
   evaluFunction: (params: any[]) => {

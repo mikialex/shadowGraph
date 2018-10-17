@@ -1,7 +1,7 @@
 import { NodeType, NodeConfig } from "../core/node-interface";
 
 export const SubstractionNodeConfig: NodeConfig = {
-  isInner: true,
+  isBuiltIn: true,
   type: NodeType.GraphNode,
   name: 'substraction',
   evaluFunction: (params: any[]) => {

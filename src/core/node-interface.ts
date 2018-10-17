@@ -33,7 +33,7 @@ export enum NodeType{
 }
 
 export interface NodeConfig {
-  isInner: boolean;
+  isBuiltIn: boolean;
   evaluFunction;
   isInputNode: boolean;
   paramsDescriptor: NodeParamDescriptor[];

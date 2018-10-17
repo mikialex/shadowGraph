@@ -1,7 +1,7 @@
 import { NodeType, NodeConfig } from "@/core/node-interface";
 
 export const BooleanInputNodeConfig: NodeConfig = {
-  isInner: true,
+  isBuiltIn: true,
   name: 'boolean-input',
   type: NodeType.inputNode,
   isInputNode: true,

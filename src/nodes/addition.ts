@@ -1,7 +1,7 @@
 import { NodeType, NodeConfig } from "../core/node-interface";
 
 export const AdditionNodeConfig: NodeConfig = {
-  isInner: true,
+  isBuiltIn: true,
   type: NodeType.GraphNode,
   name: 'addition',
   evaluFunction: (params: any[]) => {
