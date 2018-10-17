@@ -6,6 +6,7 @@ export const enum primitiveType{
 }
 
 export abstract class TypeBase{
+  reference: TypeBase;
   abstract checkIsEqual(typeToCheck: TypeBase): boolean;
 }
 
@@ -20,7 +21,15 @@ export class PrimitiveType extends TypeBase{
   }
 }
 
-export class StructedType extends TypeBase{
+export abstract class GenericTypeBase extends TypeBase{
+  typeParameters: [];
+
+  defineTypeParameter() {
+    
+  }
+}
+
+export class StructedType extends GenericTypeBase{
   name: string = '';
   memberTypeList: { [index: string]: TypeBase } = {};
 
@@ -47,9 +56,30 @@ export class StructedType extends TypeBase{
     }
     return false;
   }
+
+  codeGen() {
+    if (this.name === undefined) {
+      throw 'only named structure can gen code'
+    }
+    let str = '';
+    
+  }
 }
 
-export class UnionType extends TypeBase{
+export class GenericInjectType extends TypeBase{
+  
+}
+
+export class FunctionType extends GenericTypeBase{
+  inputParams: TypeBase[];
+  returnType: TypeBase;
+
+  checkIsEqual() {
+    return false;
+  }
+}
+
+export class UnionType extends GenericTypeBase{
   name: string = '';
   unionedTypeList: TypeBase[];
 
