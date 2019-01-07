@@ -2,6 +2,7 @@ import { Token, TokenType } from "@/parser/token";
 import { builtIn } from "@/parser/bulit-in";
 import { literal } from "@/parser/literal";
 import { operator } from "@/parser/operator";
+import { generateUUID } from '@/util/uuid';
 
 export class GLSLTokenizer {
   constructor() {
@@ -69,6 +70,7 @@ export class GLSLTokenizer {
       position: this.currentIndex,
       line: this.currentLine,
       colum: this.currentColum,
+      uuid: generateUUID()
     })
   }
 
@@ -91,7 +93,7 @@ export class GLSLTokenizer {
   }
 
   parseNormal() {
-    this.content = this.content.length ? [] : this.content;
+    this.content = []
 
     // start block comment
     if (this.currentLastCharactor === '/' && this.currentCharactor === '*') {
@@ -320,13 +322,14 @@ export class GLSLTokenizer {
   }
 
   public tokenize(inputStr: string) {
+    inputStr += '\n';
+    this.reset();
     this.input += inputStr.replace(/\r\n/g, '\n'); // repalce nextline to \n
 
-    this.currentIndex = 0;
-    let last;
+    while (this.currentIndex <= inputStr.length) {
 
-    while (this.currentCharactor = inputStr[this.currentIndex], this.currentIndex < inputStr.length) {
-      last = this.currentIndex;
+      this.currentCharactor = inputStr[this.currentIndex];
+      const last = this.currentIndex;
 
       switch (this.currentMode) {
         case TokenType.BLOCK_COMMENT: this.lexBlockComment(); break
@@ -336,9 +339,9 @@ export class GLSLTokenizer {
         case TokenType.INTEGER: this.lexInteger(); break
         case TokenType.HEX: this.lexHex(); break
         case TokenType.FLOAT: this.lexDecimal(); break
-        case TokenType.TOKEN: this.lexToken(); break
+        case TokenType.TOKEN: this.lexToken(); break // not emit
         case TokenType.WHITESPACE: this.lexWhitespace(); break
-        case TokenType.NORMAL: this.parseNormal(); break
+        case TokenType.NORMAL: this.parseNormal(); break // not emit
       }
 
       // update token Position
@@ -353,6 +356,8 @@ export class GLSLTokenizer {
             break
         }
       }
+
+
     }
 
     this.totalCharactorParsed += this.currentIndex;

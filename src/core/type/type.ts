@@ -66,9 +66,9 @@ export class StructedType extends GenericTypeBase{
   }
 }
 
-export class GenericInjectType extends TypeBase{
+// export class GenericInjectType extends TypeBase{
   
-}
+// }
 
 export class FunctionType extends GenericTypeBase{
   inputParams: TypeBase[];
