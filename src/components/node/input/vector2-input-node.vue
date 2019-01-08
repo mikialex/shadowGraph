@@ -3,9 +3,17 @@
     :boardInfo="boardInfo"
     :node="node">
     <input 
+    type="number"  
+    :disabled="isDisplayMode"
+    v-model="valueX">
+
+    <input 
     type="number" 
     :disabled="isDisplayMode"
-    v-model="value">
+    v-model="valueY">
+
+
+    <span v-if="value">true</span> <span v-if="!value">false</span>
   </NodeUIWrap>
 </template>
 
@@ -19,7 +27,7 @@ import NodeUIWrap from '@/components/node-wrap.vue';
     NodeUIWrap,
   }
 })
-export default class NumberInputNodeCom extends Vue {
+export default class Vector2InputNodeCom extends Vue {
 
   @Prop() node: ViewGraphNode
   @Prop() boardInfo;
@@ -32,10 +40,16 @@ export default class NumberInputNodeCom extends Vue {
     return this.node.getValue();
   }
 
-  set value(val){
+  get valueX(){
+    return this.value.x;
+  }
+
+  set valueX(val){
+    const value = this.value;
+    value.x = val;
     this.$store.commit('setNodeValue', {
       node:this.node,
-      value:parseFloat(val)
+      value
     })
     this.node.updateGraphValue();
   }
@@ -45,14 +59,5 @@ export default class NumberInputNodeCom extends Vue {
 </script>
 
 <style scoped lang="scss">
-.shadow-node{
-  width:100px;
-  height:50px;
-  border:1px solid #000;
-  position: absolute;
-}
 
-input{
-  width:calc(100% - 7px);
-}
 </style>

@@ -20,7 +20,7 @@ import NodeUIWrap from '@/components/node-wrap.vue';
     NodeUIWrap,
   }
 })
-export default class shadowNumberInputNodeCom extends Vue {
+export default class BooleanInputNodeCom extends Vue {
 
   @Prop() node: ViewGraphNode
   @Prop() boardInfo;

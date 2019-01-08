@@ -67,7 +67,9 @@ export class StructedType extends GenericTypeBase{
 }
 
 export class GenericInjectType extends TypeBase{
-  
+  checkIsEqual() {
+    return false;
+  }
 }
 
 export class FunctionType extends GenericTypeBase{
